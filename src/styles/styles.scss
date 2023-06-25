@@ -1,0 +1,78 @@
+body {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.button-container {
+    background-color: steelblue;
+    height: 50vh;
+    width: 40vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+.console {
+    max-height: 75%;
+    max-width: 100%;
+    overflow-y: scroll;
+    overflow-anchor: none;
+}
+.bar {
+    background: #c54;
+    height: 10px;
+
+    transition: width 0.6s cubic-bezier(0.47, 1.64, 0.41, 0.8);
+}
+.health-bar {
+    background: #ddd;
+    width: 19vw;
+    margin-right: 0.65em;
+}
+.health-bar-container {
+    display: flex;
+    justify-content: end;
+}
+
+.middle-grouping {
+    display: grid;
+    grid-template-columns: 0.5fr 1fr;
+    gap: 4em;
+}
+.player-inventory {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr;
+    overflow-y: scroll;
+    max-height: 45vh;
+}
+.player-menu {
+}
+.inventory-space {
+    border: 1px dashed red;
+    text-align: center;
+    padding: 0.25em;
+    margin: 0.35em;
+}
+.equipment-slot {
+    display: flex;
+    justify-content: space-around;
+    border: 1px dashed red;
+    align-items: center;
+    margin: 0.3em 0.2em;
+    padding: 0.5em 0.1em;
+}
+.equipment-slot p {
+    margin-bottom: 0;
+}
+.player-equipment {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr;
+}
