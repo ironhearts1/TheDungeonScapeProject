@@ -24,19 +24,6 @@ export function App() {
     const [attackStyle, setAttackStyle] = useState("Accurate");
     const [gameDisabled, setGameDisabled] = useState(false);
 
-    let initalInvi: [number, Item | CombatItem | HealingItem | null][] = [];
-    for (let i = 0; i < 30; i++) {
-        initalInvi.push([0, null]);
-    }
-    const equipmentTypes = ["Main-Hand", "Off-Hand", "Helmat", "Body", "Legs", "Boots", "Gloves", "Cape", "Necklace", "Ring"];
-    let initalEquipment: [string, CombatItem | null][] = [];
-    for (let i = 0; i < equipmentTypes.length; i++) {
-        initalEquipment.push([equipmentTypes[i], null]);
-    }
-
-    const [playerInventory, setPlayerInventory] = useState(initalInvi);
-    const [playerEquipment, setPlayerEquipment] = useState(initalEquipment);
-
     function updateConsole(message: string) {
         setIsLoading(true);
         setConsoleMessages((prev) => {
@@ -129,8 +116,9 @@ export function App() {
     }
     async function enemyKilled(enemy: character) {
         experienceGained();
-        let dropReturn: [Item | CombatItem | HealingItem | null, number] = calculateLootDrop(enemy.lootTable);
+        let dropReturn: [Item | CombatItem | HealingItem | false, number] = calculateLootDrop(enemy.lootTable);
         addDropToInventory(dropReturn);
+        saveToDatabase();
         if (dungeonEnemyList.length === 1) {
             updateConsole(`You have successfully cleared the Dungeon! Good job!`);
             let tempList = dungeonEnemyList;
@@ -159,29 +147,40 @@ export function App() {
                 playerState.xp.hpXP += (1 / 4) * experience;
                 playerState.xp.attackXP += experience;
             }
-
-            let _playerStateSerialized = { name: playerSnap.name, npc: false, xp: { ...playerState.xp }, skills: { ...playerState.skills } };
-            console.log(_playerStateSerialized);
-            let playerStateSerialized = JSON.stringify(_playerStateSerialized);
-            axios.put("https://thedungeonscapeproject-default-rtdb.firebaseio.com/playerState/.json", playerStateSerialized);
         }
     }
+    function saveToDatabase() {
+        console.log("test");
+        let _playerStateSerialized = {
+            name: playerSnap.name,
+            npc: false,
+            xp: { ...playerState.xp },
+            skills: { ...playerState.skills },
+            inventory: [...playerState.inventory],
+            equipment: [...playerState.equipment],
+        };
+        console.log("test", _playerStateSerialized);
+        let playerStateSerialized = JSON.stringify(_playerStateSerialized);
+        axios.put(`https://thedungeonscapeproject-default-rtdb.firebaseio.com/${playerSnap.name}/playerState/.json`, playerStateSerialized);
+    }
 
-    function addDropToInventory(drop: [Item | CombatItem | HealingItem | null, number]) {
+    function addDropToInventory(drop: [Item | CombatItem | HealingItem | false, number]) {
         // DROP IS [ITEM, AMOUNT]
         // INVENTORY IS [[AMOUNT, ITEM],[AMOUNT, ITEM], ECT]
-        if (drop[0] === null) {
+        if (drop[0] === false) {
             updateConsole("Looted nothing from the corpse");
             return;
         }
-        let inventory = playerInventory;
+        console.log(drop);
+        let inventory = [...playerState.inventory];
+        console.log(inventory);
         let stackable = drop[0]["stackable"];
         for (let i = 0; i < inventory.length; i++) {
-            if (inventory[i][1] === null) {
+            if (inventory[i][1] === false) {
                 updateConsole(`You looted ${drop[1]} ${drop[0]["name"]}`);
                 inventory[i][1] = drop[0];
                 inventory[i][0] = drop[1];
-                setPlayerInventory(inventory);
+                playerState.inventory = inventory;
                 return;
             }
             if (stackable === true) {
@@ -189,7 +188,7 @@ export function App() {
                 if (inventory[i][1]["name"] === drop[0]["name"]) {
                     updateConsole(`You looted ${drop[1]} ${drop[0]["name"]}`);
                     inventory[i][0] += drop[1];
-                    setPlayerInventory(inventory);
+                    playerState.inventory = inventory;
                     return;
                 }
             }
@@ -251,14 +250,7 @@ export function App() {
                 </div>
                 <div className="middle-grouping">
                     <div>
-                        <PlayerMenu
-                            attackStyle={attackStyle}
-                            handleAttackStyleChange={handleAttackStyleChange}
-                            inventory={playerInventory}
-                            equipment={playerEquipment}
-                            setInventory={setPlayerInventory}
-                            setEquipment={setPlayerEquipment}
-                        />
+                        <PlayerMenu attackStyle={attackStyle} handleAttackStyleChange={handleAttackStyleChange} />
                     </div>
                     <div className="button-container">
                         <div className="button-groupings">

@@ -8,8 +8,11 @@ import { playerMenuProps } from "../types/componentTypes";
 import { useState } from "react";
 import InventoryItem from "./InventoryItem";
 import PlayerAttackStyle from "./PlayerAttackStyle";
+import { playerState } from "../store";
+import { useSnapshot } from "valtio";
 
-export default function PlayerMenu({ handleAttackStyleChange, attackStyle, inventory, equipment, setInventory, setEquipment }: playerMenuProps) {
+export default function PlayerMenu({ handleAttackStyleChange, attackStyle }: playerMenuProps) {
+    const playerSnap = useSnapshot(playerState, { sync: true });
     const [value, setValue] = useState("1");
     const handleMenuChange = (event: React.SyntheticEvent, newValue: string) => {
         setValue(newValue);
@@ -30,18 +33,19 @@ export default function PlayerMenu({ handleAttackStyleChange, attackStyle, inven
                 </TabPanel>
                 <TabPanel value="2">
                     <div className="player-inventory">
-                        {inventory.map((elm, index) => {
-                            if (elm[1] === null) {
+                        {playerSnap.inventory.map((elm, index) => {
+                            //@ts-ignore
+                            if (elm[1] === false) {
                                 return;
                             }
-
-                            return <InventoryItem elm={elm} index={index} inventory={inventory} setInventory={setInventory} equipment={equipment} setEquipment={setEquipment} />;
+                            //@ts-ignore
+                            return <InventoryItem elm={elm} index={index} />;
                         })}
                     </div>
                 </TabPanel>
                 <TabPanel value="3">
                     <div className="player-equipment">
-                        {equipment.map((elm, index) => {
+                        {playerSnap.equipment.map((elm, index) => {
                             return (
                                 <div className="equipment-slot">
                                     <p>{index + 1}</p>

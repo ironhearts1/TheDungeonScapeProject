@@ -11,19 +11,11 @@ export type healthBarProps = {
 export type playerMenuProps = {
     handleAttackStyleChange: Function;
     attackStyle: string;
-    inventory: [number, Item | CombatItem | HealingItem | null][];
-    equipment: [string, CombatItem | null][];
-    setInventory: Function;
-    setEquipment: Function;
 };
 
 export type inventoryItemProps = {
-    elm: [number, Item | CombatItem | HealingItem | null];
+    elm: [number, Item | CombatItem | HealingItem | false];
     index: number;
-    inventory: [number, Item | CombatItem | HealingItem | null][];
-    equipment: [string, CombatItem | null][];
-    setInventory: Function;
-    setEquipment: Function;
 };
 
 export type playerAttackStyleProps = {

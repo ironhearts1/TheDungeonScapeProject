@@ -33,6 +33,6 @@ export function calculateLootDrop(dropTable: LootDropIdentifier[]) {
             break;
         }
     }
-    let drop: [Item | CombatItem | HealingItem | null, number] = [dropTable[dropID][1], dropTable[dropID][2]];
+    let drop: [Item | CombatItem | HealingItem | false, number] = [dropTable[dropID][1], dropTable[dropID][2]];
     return drop;
 }

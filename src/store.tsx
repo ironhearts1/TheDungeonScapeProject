@@ -1,6 +1,7 @@
 import axios from "axios";
 import { proxy, subscribe } from "valtio";
 import { generateXPLevels } from "./functions/utils";
+import { CombatItem, HealingItem, Item } from "./types/itemTypes";
 
 let experienceLevels = generateXPLevels();
 
@@ -26,11 +27,21 @@ export interface IPlayerState {
         getDefenseRoll(): number;
         getStrengthRoll(): number;
     };
+    inventory: [number, Item | CombatItem | HealingItem | false][];
+    equipment: [string, CombatItem | false][];
 }
-let importedData = await axios.get("https://thedungeonscapeproject-default-rtdb.firebaseio.com/playerState/.json").then((res) => res.data);
+let importedData = await axios.get("https://thedungeonscapeproject-default-rtdb.firebaseio.com/Josh/playerState/.json").then((res) => res.data);
 console.log(importedData);
-
-export const playerState: IPlayerState = await proxy({
+let initalInvi: [number, Item | CombatItem | HealingItem | false][] = [];
+for (let i = 0; i < 30; i++) {
+    initalInvi.push([0, false]);
+}
+const equipmentTypes = ["Main-Hand", "Off-Hand", "Helmat", "Body", "Legs", "Boots", "Gloves", "Cape", "Necklace", "Ring"];
+let initalEquipment: [string, CombatItem | false][] = [];
+for (let i = 0; i < equipmentTypes.length; i++) {
+    initalEquipment.push([equipmentTypes[i], false]);
+}
+export const playerState: IPlayerState = proxy({
     name: "Josh",
     npc: false,
     xp: { ...importedData.xp },
@@ -49,9 +60,11 @@ export const playerState: IPlayerState = await proxy({
             return (playerState.skills.strength + 50) / 200;
         },
     },
+    // inventory: [...initalInvi],
+    // equipment: [...initalEquipment],
+    inventory: [...importedData.inventory],
+    equipment: [...importedData.equipment],
 });
-
-console.log(experienceLevels);
 
 subscribe(playerState.xp, () => {
     for (let stat in playerState.xp) {
@@ -84,6 +97,20 @@ subscribe(playerState.xp, () => {
         }
     }
 });
+
+//generate fresh empty inventory
+// let initalInvi: [number, Item | CombatItem | HealingItem | null][] = [];
+// for (let i = 0; i < 30; i++) {
+//     initalInvi.push([0, null]);
+// }
+// const equipmentTypes = ["Main-Hand", "Off-Hand", "Helmat", "Body", "Legs", "Boots", "Gloves", "Cape", "Necklace", "Ring"];
+// let initalEquipment: [string, CombatItem | null][] = [];
+// for (let i = 0; i < equipmentTypes.length; i++) {
+//     initalEquipment.push([equipmentTypes[i], null]);
+// }
+
+// const [playerInventory, setPlayerInventory] = useState(initalInvi);
+// const [playerEquipment, setPlayerEquipment] = useState(initalEquipment);
 
 // {
 //     name: "Josh",

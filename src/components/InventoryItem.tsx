@@ -2,20 +2,28 @@ import React, { useRef, useState } from "react";
 
 import { Menu, MenuItem } from "@mui/material";
 import { inventoryItemProps } from "../types/componentTypes";
+import { CombatItem, HealingItem } from "../types/itemTypes";
+import { playerState } from "../store";
+import { useSnapshot } from "valtio";
 
-function InventoryItem({ elm, index, inventory, setInventory, equipment, setEquipment }: inventoryItemProps) {
+function InventoryItem({ elm, index }: inventoryItemProps) {
+    const playerSnap = useSnapshot(playerState, { sync: true });
     function handleDrop(index: number) {
-        let newInvi = [...inventory];
+        console.log(playerSnap);
+        console.log("dropped");
+        let newInvi = [...playerState.inventory];
         //@ts-ignore
-        setInventory([...newInvi.toSpliced(index, 1), [0, null]]);
+        let test = [...newInvi.toSpliced(index, 1), [0, false]];
+        playerState.inventory = test;
     }
-    function handleEquip() {}
+    function handleEquip(item: [number, CombatItem]) {
+        console.log(item);
+    }
     function handleConsume() {}
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     function handleClick(e: React.MouseEvent<HTMLButtonElement>) {
         setAnchorEl(() => e.currentTarget);
-        console.log("clicked");
     }
 
     const handleClose = () => {
@@ -37,7 +45,8 @@ function InventoryItem({ elm, index, inventory, setInventory, equipment, setEqui
                           if (option === "Drop") {
                               return <MenuItem onClick={() => handleDrop(index)}>{option}</MenuItem>;
                           } else if (option === "Equip") {
-                              return <MenuItem onClick={() => handleEquip}>{option}</MenuItem>;
+                              //@ts-ignore
+                              return <MenuItem onClick={() => handleEquip(elm)}>{option}</MenuItem>;
                           } else if (option === "Consume") {
                               return <MenuItem onClick={() => handleConsume}>{option}</MenuItem>;
                           } else {
