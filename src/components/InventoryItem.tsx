@@ -1,23 +1,47 @@
 import React, { useRef, useState } from "react";
 
 import { Menu, MenuItem } from "@mui/material";
-import { inventoryItemProps } from "../types/componentTypes";
+import { equipmentItemProps, inventoryItemProps } from "../types/componentTypes";
 import { CombatItem, HealingItem } from "../types/itemTypes";
 import { playerState } from "../store";
 import { useSnapshot } from "valtio";
 
 function InventoryItem({ elm, index }: inventoryItemProps) {
+    console.log(playerState.inventory);
     const playerSnap = useSnapshot(playerState, { sync: true });
-    function handleDrop(index: number) {
-        console.log(playerSnap);
-        console.log("dropped");
-        let newInvi = [...playerState.inventory];
+    function handleDrop() {
+        let _newInvi = [...playerState.inventory];
         //@ts-ignore
-        let test = [...newInvi.toSpliced(index, 1), [0, false]];
-        playerState.inventory = test;
+        let newInvi = [..._newInvi.toSpliced(index, 1), [0, false]];
+        playerState.inventory = newInvi;
     }
-    function handleEquip(item: [number, CombatItem]) {
-        console.log(item);
+    function handleEquip() {
+        console.log(elm);
+        if (elm[1]) {
+            let equippingItem = elm[1] as CombatItem;
+            let equiptype = equippingItem.equipSlot;
+            console.log(playerState.inventory);
+            console.log(playerState.equipment);
+            playerState.equipment.map((slot, i) => {
+                if (slot[0] === equiptype) {
+                    console.log("type found", slot[0], equiptype);
+                    if (slot[1] === false) {
+                        playerState.equipment[i][1] = equippingItem;
+                        console.log("equipped");
+                        if ((equippingItem.stackable = false)) {
+                            handleDrop();
+                            console.log("dropped");
+                        } else {
+                            playerState.inventory[index][0] -= 1;
+                        }
+                    } else {
+                        let swappingItem = playerState.equipment[i][1];
+                        playerState.equipment[i][1] = equippingItem;
+                        playerState.inventory[index][1] = swappingItem;
+                    }
+                }
+            });
+        }
     }
     function handleConsume() {}
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -32,7 +56,7 @@ function InventoryItem({ elm, index }: inventoryItemProps) {
 
     return (
         //@ts-ignore
-        <div onClick={(e) => handleClick(e)} className="test">
+        <div onClick={(e) => handleClick(e)}>
             <div className="inventory-space">
                 {index + 1}
                 <br />
@@ -43,10 +67,10 @@ function InventoryItem({ elm, index }: inventoryItemProps) {
                 {elm[1]
                     ? elm[1].clickOptions.map((option: string) => {
                           if (option === "Drop") {
-                              return <MenuItem onClick={() => handleDrop(index)}>{option}</MenuItem>;
+                              return <MenuItem onClick={() => handleDrop()}>{option}</MenuItem>;
                           } else if (option === "Equip") {
                               //@ts-ignore
-                              return <MenuItem onClick={() => handleEquip(elm)}>{option}</MenuItem>;
+                              return <MenuItem onClick={() => handleEquip()}>{option}</MenuItem>;
                           } else if (option === "Consume") {
                               return <MenuItem onClick={() => handleConsume}>{option}</MenuItem>;
                           } else {

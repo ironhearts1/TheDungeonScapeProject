@@ -10,6 +10,7 @@ import InventoryItem from "./InventoryItem";
 import PlayerAttackStyle from "./PlayerAttackStyle";
 import { playerState } from "../store";
 import { useSnapshot } from "valtio";
+import EquipmentItem from "./EquipmentItem";
 
 export default function PlayerMenu({ handleAttackStyleChange, attackStyle }: playerMenuProps) {
     const playerSnap = useSnapshot(playerState, { sync: true });
@@ -45,13 +46,8 @@ export default function PlayerMenu({ handleAttackStyleChange, attackStyle }: pla
                 </TabPanel>
                 <TabPanel value="3">
                     <div className="player-equipment">
-                        {playerSnap.equipment.map((elm, index) => {
-                            return (
-                                <div className="equipment-slot">
-                                    <p>{index + 1}</p>
-                                    <p>x</p>
-                                </div>
-                            );
+                        {playerState.equipment.map((elm, index) => {
+                            return <EquipmentItem elm={elm} index={index} />;
                         })}
                     </div>
                 </TabPanel>

@@ -17,6 +17,10 @@ export type inventoryItemProps = {
     elm: [number, Item | CombatItem | HealingItem | false];
     index: number;
 };
+export type equipmentItemProps = {
+    elm: [string, CombatItem | false];
+    index: number;
+};
 
 export type playerAttackStyleProps = {
     attackStyle: string;
