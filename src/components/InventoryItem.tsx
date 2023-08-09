@@ -7,7 +7,6 @@ import { playerState } from "../store";
 import { useSnapshot } from "valtio";
 
 function InventoryItem({ elm, index }: inventoryItemProps) {
-    console.log(playerState.inventory);
     const playerSnap = useSnapshot(playerState, { sync: true });
     function handleDrop() {
         let _newInvi = [...playerState.inventory];
@@ -16,19 +15,16 @@ function InventoryItem({ elm, index }: inventoryItemProps) {
         playerState.inventory = newInvi;
     }
     function handleEquip() {
-        console.log(elm);
         if (elm[1]) {
             let equippingItem = elm[1] as CombatItem;
             let equiptype = equippingItem.equipSlot;
-            console.log(playerState.inventory);
-            console.log(playerState.equipment);
             playerState.equipment.map((slot, i) => {
                 if (slot[0] === equiptype) {
-                    console.log("type found", slot[0], equiptype);
+                    console.log("type found", slot[0], equiptype, equippingItem);
                     if (slot[1] === false) {
                         playerState.equipment[i][1] = equippingItem;
                         console.log("equipped");
-                        if ((equippingItem.stackable = false)) {
+                        if (equippingItem.stackable === false) {
                             handleDrop();
                             console.log("dropped");
                         } else {
@@ -43,7 +39,27 @@ function InventoryItem({ elm, index }: inventoryItemProps) {
             });
         }
     }
-    function handleConsume() {}
+    function handleConsume() {
+        console.log("consumed");
+        let itemCount = elm[0];
+        let item = elm[1] as HealingItem;
+        let healAmount = item.pointsHealed;
+        let hpMissing = playerState.skills.maxHP - playerState.skills.currentHP;
+        console.log(playerState.skills);
+        //the healing
+        if (hpMissing <= healAmount) {
+            playerState.skills.currentHP = playerState.skills.maxHP;
+        } else {
+            playerState.skills.currentHP = playerState.skills.currentHP + healAmount;
+        }
+        //amount manipulation
+        if (itemCount === 1) {
+            handleDrop();
+            return;
+        } else {
+            playerState.inventory[index][0] = playerState.inventory[index][0] - 1;
+        }
+    }
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     function handleClick(e: React.MouseEvent<HTMLButtonElement>) {
@@ -72,7 +88,7 @@ function InventoryItem({ elm, index }: inventoryItemProps) {
                               //@ts-ignore
                               return <MenuItem onClick={() => handleEquip()}>{option}</MenuItem>;
                           } else if (option === "Consume") {
-                              return <MenuItem onClick={() => handleConsume}>{option}</MenuItem>;
+                              return <MenuItem onClick={() => handleConsume()}>{option}</MenuItem>;
                           } else {
                               return;
                           }

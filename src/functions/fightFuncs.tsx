@@ -1,5 +1,8 @@
+import { levelOneATable, levelOneBTable, levelOneCTable } from "../objects/loot tables/levelOneLoots";
 import { IPlayerState, playerState } from "../store";
 import { character } from "../types/characterTypes";
+import { between } from "./utils";
+import * as NPC from "../objects/characters/npc";
 
 export function rollPlayerAttack(attacker: IPlayerState, defender: character, updateConsole: Function, setEnemyCurrHP: Function) {
     let attackerAttRoll: number = Math.random() * 10 * attacker.combat.getAttackRoll();
@@ -40,4 +43,40 @@ export function updateEnemyHealth(enemy: character, damage: number, setEnemyCurr
     }
     enemy.setHP(newHealth);
     setEnemyCurrHP(() => newHealth);
+}
+
+export function generateEnemyList(lvl: number): character[] {
+    let tempList: character[] = [];
+    for (let i = 0; i < 5; i++) {
+        let randomNum = between(1, 6);
+        if ((lvl = 1))
+            switch (randomNum) {
+                //goblin spawn
+                case 1:
+                    let newGoblin = new NPC.Enemy("Goblin", 5, 3, 1, 3, levelOneBTable);
+                    tempList.push(newGoblin);
+                    break;
+                //rat spawn
+                case 2:
+                    let newRat = new NPC.Enemy("Rat", 3, 1, 1, 1, levelOneATable);
+                    tempList.push(newRat);
+                    break;
+                //blind man Spawn
+                case 3:
+                    let newBlindMan = new NPC.Enemy("Blind Man", 10, 1, 5, 5, levelOneCTable);
+                    tempList.push(newBlindMan);
+                    break;
+                case 4:
+                    let newCow = new NPC.Enemy("Cow", 15, 1, 1, 5, levelOneBTable);
+                    tempList.push(newCow);
+                    break;
+                case 5:
+                    let newOgre = new NPC.Enemy("Ogre", 7, 8, 5, 2, levelOneCTable);
+                    tempList.push(newOgre);
+                    break;
+                default:
+                    break;
+            }
+    }
+    return tempList;
 }

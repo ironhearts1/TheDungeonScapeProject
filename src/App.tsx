@@ -8,10 +8,8 @@ import { sleep, between, calculateLootDrop } from "./functions/utils";
 import HealthBar from "./components/HealthBar";
 import axios from "axios";
 import PlayerMenu from "./components/PlayerMenu";
-import { levelOneATable, levelOneBTable, levelOneCTable } from "./objects/loot tables/levelOneLoots";
-import { LootDropIdentifier } from "./types/miscTypes";
 import { CombatItem, HealingItem, Item } from "./types/itemTypes";
-import { rollEnemyAttack, rollPlayerAttack } from "./functions/fightFuncs";
+import { generateEnemyList, rollEnemyAttack, rollPlayerAttack } from "./functions/fightFuncs";
 
 export function App() {
     const playerSnap = useSnapshot(playerState, { sync: true });
@@ -73,29 +71,7 @@ export function App() {
         setGameDisabled(false);
     }
     function enterDungeon() {
-        let tempList: character[] = [];
-        for (let i = 0; i < 5; i++) {
-            let randomNum = between(1, 4);
-            switch (randomNum) {
-                //goblin spawn
-                case 1:
-                    let newGoblin = new NPC.Enemy("Goblin", 5, 1, 1, 3, levelOneBTable);
-                    tempList.push(newGoblin);
-                    break;
-                //rat spawn
-                case 2:
-                    let newRat = new NPC.Enemy("Rat", 3, 1, 1, 1, levelOneATable);
-                    tempList.push(newRat);
-                    break;
-                //blind man Spawn
-                case 3:
-                    let newBlindMan = new NPC.Enemy("Blind Man", 10, 1, 5, 5, levelOneCTable);
-                    tempList.push(newBlindMan);
-                    break;
-                default:
-                    break;
-            }
-        }
+        let tempList: character[] = generateEnemyList(1);
         updateCurrentEnemy(tempList);
     }
 
@@ -155,6 +131,7 @@ export function App() {
             name: playerSnap.name,
             npc: false,
             xp: { ...playerState.xp },
+            bonuses: { ...playerState.bonuses },
             skills: { ...playerState.skills },
             inventory: [...playerState.inventory],
             equipment: [...playerState.equipment],
@@ -219,13 +196,13 @@ export function App() {
             <div className="container">
                 <div>
                     <p>
-                        attack: {playerSnap.skills.attack} xp: {playerSnap.xp.attackXP}
+                        attack: {playerSnap.skills.attack} xp: {playerSnap.xp.attackXP} Bonus: {playerSnap.bonuses.attackBonus}
                     </p>
                     <p>
-                        strength: {playerSnap.skills.strength} xp: {playerSnap.xp.strengthXP}
+                        strength: {playerSnap.skills.strength} xp: {playerSnap.xp.strengthXP} Bonus: {playerSnap.bonuses.strengthBonus}
                     </p>
                     <p>
-                        defense: {playerSnap.skills.defense} xp: {playerSnap.xp.defenseXP}
+                        defense: {playerSnap.skills.defense} xp: {playerSnap.xp.defenseXP} Bonus: {playerSnap.bonuses.defenseBonus}
                     </p>
                     <p>
                         health: {playerSnap.skills.maxHP} xp: {playerSnap.xp.hpXP}
@@ -250,7 +227,7 @@ export function App() {
                 </div>
                 <div className="middle-grouping">
                     <div>
-                        <PlayerMenu attackStyle={attackStyle} handleAttackStyleChange={handleAttackStyleChange} />
+                        <PlayerMenu attackStyle={attackStyle} handleAttackStyleChange={handleAttackStyleChange} updateConsole={updateConsole} />
                     </div>
                     <div className="button-container">
                         <div className="button-groupings">

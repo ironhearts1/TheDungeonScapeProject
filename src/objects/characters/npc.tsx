@@ -1,3 +1,4 @@
+import { between } from "../../functions/utils";
 import { LootDropIdentifier } from "../../types/miscTypes";
 
 export class Enemy {
@@ -28,6 +29,6 @@ export class Enemy {
         return (this.defense + 50) / 100;
     }
     getStrengthRoll() {
-        return (this.strength + 50) / 200;
+        return ((this.strength + 50) * (between(90, 110) / 100)) / 175;
     }
 }

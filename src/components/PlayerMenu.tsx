@@ -12,7 +12,7 @@ import { playerState } from "../store";
 import { useSnapshot } from "valtio";
 import EquipmentItem from "./EquipmentItem";
 
-export default function PlayerMenu({ handleAttackStyleChange, attackStyle }: playerMenuProps) {
+export default function PlayerMenu({ handleAttackStyleChange, attackStyle, updateConsole }: playerMenuProps) {
     const playerSnap = useSnapshot(playerState, { sync: true });
     const [value, setValue] = useState("1");
     const handleMenuChange = (event: React.SyntheticEvent, newValue: string) => {
@@ -34,7 +34,7 @@ export default function PlayerMenu({ handleAttackStyleChange, attackStyle }: pla
                 </TabPanel>
                 <TabPanel value="2">
                     <div className="player-inventory">
-                        {playerSnap.inventory.map((elm, index) => {
+                        {playerState.inventory.map((elm, index) => {
                             //@ts-ignore
                             if (elm[1] === false) {
                                 return;
@@ -47,7 +47,7 @@ export default function PlayerMenu({ handleAttackStyleChange, attackStyle }: pla
                 <TabPanel value="3">
                     <div className="player-equipment">
                         {playerState.equipment.map((elm, index) => {
-                            return <EquipmentItem elm={elm} index={index} />;
+                            return <EquipmentItem elm={elm} index={index} updateConsole={updateConsole} />;
                         })}
                     </div>
                 </TabPanel>

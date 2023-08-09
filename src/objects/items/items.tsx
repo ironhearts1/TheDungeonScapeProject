@@ -52,6 +52,6 @@ export const bandage: HealingItem = {
     name: "Bandage",
     value: 20,
     stackable: true,
-    pointsHealed: 4,
+    pointsHealed: 6,
     clickOptions: ["Consume", "Drop"],
 };

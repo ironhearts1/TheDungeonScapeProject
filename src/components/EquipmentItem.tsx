@@ -4,25 +4,34 @@ import { playerState } from "../store";
 import { equipmentItemProps } from "../types/componentTypes";
 import { Menu, MenuItem } from "@mui/material";
 
-function EquipmentItem({ elm, index }: equipmentItemProps) {
+function EquipmentItem({ elm, index, updateConsole }: equipmentItemProps) {
     const playerSnap = useSnapshot(playerState, { sync: true });
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
 
     function handleUnequip() {
-        console.log("unequip");
         if (elm[1]) {
             let unEquippingItem = elm[1];
             let unEquipType = unEquippingItem.equipSlot;
             let slot = playerState.equipment[index];
             if (slot[0] === unEquipType) {
-                console.log("type found", slot[0], unEquipType);
-                //search inventory for free space
-                //if no free space then say "you cant unequip"
-                //if free space then enter to first avaliable space
-                // let swappingItem = playerState.equipment[index][1];
-                // playerState.equipment[i][1] = unEquippingItem;
-                // playerState.inventory[index][1] = swappingItem;
+                let freeSpace;
+                for (let i = 0; i < playerState.inventory.length; i++) {
+                    if (playerState.inventory[i][1] == false) {
+                        freeSpace = playerState.inventory[i];
+                        console.log(freeSpace, i);
+                        break;
+                    }
+                }
+
+                if (!freeSpace) {
+                    updateConsole("There is no space for you to unequip that!");
+                    return;
+                }
+
+                freeSpace[1] = unEquippingItem;
+                freeSpace[0]++;
+                slot[1] = false;
             }
         }
     }

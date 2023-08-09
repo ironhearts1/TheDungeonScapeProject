@@ -11,6 +11,7 @@ export type healthBarProps = {
 export type playerMenuProps = {
     handleAttackStyleChange: Function;
     attackStyle: string;
+    updateConsole: Function;
 };
 
 export type inventoryItemProps = {
@@ -20,6 +21,7 @@ export type inventoryItemProps = {
 export type equipmentItemProps = {
     elm: [string, CombatItem | false];
     index: number;
+    updateConsole: Function;
 };
 
 export type playerAttackStyleProps = {

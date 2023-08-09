@@ -1,6 +1,6 @@
 import axios from "axios";
 import { proxy, subscribe } from "valtio";
-import { generateXPLevels } from "./functions/utils";
+import { between, generateXPLevels } from "./functions/utils";
 import { CombatItem, HealingItem, Item } from "./types/itemTypes";
 
 let experienceLevels = generateXPLevels();
@@ -13,6 +13,11 @@ export interface IPlayerState {
         strengthXP: number;
         defenseXP: number;
         hpXP: number;
+    };
+    bonuses: {
+        attackBonus: number;
+        strengthBonus: number;
+        defenseBonus: number;
     };
     skills: {
         maxHP: number;
@@ -45,19 +50,20 @@ export const playerState: IPlayerState = proxy({
     name: "Josh",
     npc: false,
     xp: { ...importedData.xp },
+    bonuses: { ...importedData.bonuses },
     skills: { ...importedData.skills },
     combat: {
         setHP: function (newHP: number) {
             playerState.skills.currentHP = newHP;
         },
         getAttackRoll: function () {
-            return (playerState.skills.attack + 50) / 100;
+            return (playerState.skills.attack + playerState.bonuses.attackBonus + 50) / 100;
         },
         getDefenseRoll: function () {
-            return (playerState.skills.defense + 50) / 100;
+            return (playerState.skills.defense + playerState.bonuses.strengthBonus + 50) / 100;
         },
         getStrengthRoll: function () {
-            return (playerState.skills.strength + 50) / 200;
+            return ((playerState.skills.strength + playerState.bonuses.defenseBonus + 50) * (between(90, 110) / 100)) / 175;
         },
     },
     // inventory: [...initalInvi],
@@ -96,6 +102,25 @@ subscribe(playerState.xp, () => {
             }
         }
     }
+});
+subscribe(playerState.equipment, () => {
+    let equipment = playerState.equipment;
+    let aBonus = 0;
+    let sBonus = 0;
+    let dBonus = 0;
+    equipment.map((slot) => {
+        let item = slot[1];
+        console.log(item);
+        if (!item) {
+            return;
+        }
+        aBonus = +item.attBonus;
+        sBonus = +item.strBonus;
+        dBonus = +item.defBonus;
+    });
+    playerState.bonuses.attackBonus = aBonus;
+    playerState.bonuses.strengthBonus = sBonus;
+    playerState.bonuses.defenseBonus = dBonus;
 });
 
 //generate fresh empty inventory
