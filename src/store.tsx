@@ -114,9 +114,9 @@ subscribe(playerState.equipment, () => {
         if (!item) {
             return;
         }
-        aBonus = +item.attBonus;
-        sBonus = +item.strBonus;
-        dBonus = +item.defBonus;
+        aBonus = aBonus + item.attBonus;
+        sBonus = sBonus + item.strBonus;
+        dBonus = dBonus + item.defBonus;
     });
     playerState.bonuses.attackBonus = aBonus;
     playerState.bonuses.strengthBonus = sBonus;

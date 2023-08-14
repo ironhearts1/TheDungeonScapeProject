@@ -9,7 +9,7 @@ import HealthBar from "./components/HealthBar";
 import axios from "axios";
 import PlayerMenu from "./components/PlayerMenu";
 import { CombatItem, HealingItem, Item } from "./types/itemTypes";
-import { generateEnemyList, rollEnemyAttack, rollPlayerAttack } from "./functions/fightFuncs";
+import { generateBossFight, generateEnemyList, rollEnemyAttack, rollPlayerAttack } from "./functions/fightFuncs";
 
 export function App() {
     const playerSnap = useSnapshot(playerState, { sync: true });
@@ -73,6 +73,33 @@ export function App() {
     function enterDungeon() {
         let tempList: character[] = generateEnemyList(1);
         updateCurrentEnemy(tempList);
+    }
+    function enterBossDungeon() {
+        let inventory = playerState.inventory;
+
+        inventory.map((slot) => {
+            if (slot[1] === false) {
+                return;
+            } else {
+                let itemName = slot[1].name.split(" ");
+                if (itemName[0] === "Boss" && itemName[1] === "Key") {
+                    if (slot[0] === 1) {
+                        slot[0]--;
+                        slot[1] = false;
+                        let tempList: character[] = generateBossFight(1);
+                        updateCurrentEnemy(tempList);
+                        return;
+                    } else if (slot[0] > 1) {
+                        console.log("good");
+                        slot[0]--;
+                        let tempList: character[] = generateBossFight(1);
+                        updateCurrentEnemy(tempList);
+                        return;
+                    }
+                }
+                return;
+            }
+        });
     }
 
     function updateCurrentEnemy(newEnemyList: character[]) {
@@ -170,7 +197,7 @@ export function App() {
                 }
             }
         }
-        updateConsole("You drop fell on the floor because you have no space!");
+        updateConsole(`You drop fell on the floor because you have no space!`);
         return;
     }
     let playerBarWidth = (playerSnap.skills.currentHP / playerSnap.skills.maxHP) * 100;
@@ -237,6 +264,9 @@ export function App() {
                             <button className="btn btn-warning px-2 mx-1" onClick={() => runFight(playerState as IPlayerState, currentEnemy as NPC.Enemy)} disabled={gameDisabled}>
                                 start
                             </button>
+                            <button className="btn btn-info px-2 mx-1" onClick={() => enterBossDungeon()} disabled={gameDisabled}>
+                                Enter the Bosses Dungeon
+                            </button>
                             <button className="btn btn-danger px-2 mx-1" onClick={() => clearConsole()} disabled={gameDisabled}>
                                 clear
                             </button>
@@ -251,9 +281,16 @@ export function App() {
                                     .reverse()
                                     .map((message, index) => {
                                         let messageArray = message.split(" ");
-                                        let check = messageArray.indexOf("dealt");
-                                        if (check > 0) {
-                                            if (Number(messageArray[check + 1]) > 0) {
+                                        let damageCheck = messageArray.indexOf("dealt");
+                                        let lootCheck = messageArray.indexOf("looted");
+                                        if (damageCheck > 0 || lootCheck > 0) {
+                                            if (Number(messageArray[damageCheck + 1]) > 0) {
+                                                return (
+                                                    <p className="mx-3" key={index}>
+                                                        <b>{message}</b>
+                                                    </p>
+                                                );
+                                            } else if (lootCheck > 0) {
                                                 return (
                                                     <p className="mx-3" key={index}>
                                                         <b>{message}</b>

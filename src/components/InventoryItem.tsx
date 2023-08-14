@@ -45,7 +45,6 @@ function InventoryItem({ elm, index }: inventoryItemProps) {
         let item = elm[1] as HealingItem;
         let healAmount = item.pointsHealed;
         let hpMissing = playerState.skills.maxHP - playerState.skills.currentHP;
-        console.log(playerState.skills);
         //the healing
         if (hpMissing <= healAmount) {
             playerState.skills.currentHP = playerState.skills.maxHP;

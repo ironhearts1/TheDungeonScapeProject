@@ -1,4 +1,4 @@
-import { levelOneATable, levelOneBTable, levelOneCTable } from "../objects/loot tables/levelOneLoots";
+import { levelOneATable, levelOneBTable, levelOneBossTable, levelOneCTable } from "../objects/loot tables/levelOneLoots";
 import { IPlayerState, playerState } from "../store";
 import { character } from "../types/characterTypes";
 import { between } from "./utils";
@@ -49,7 +49,7 @@ export function generateEnemyList(lvl: number): character[] {
     let tempList: character[] = [];
     for (let i = 0; i < 5; i++) {
         let randomNum = between(1, 6);
-        if ((lvl = 1))
+        if (lvl == 1) {
             switch (randomNum) {
                 //goblin spawn
                 case 1:
@@ -77,6 +77,21 @@ export function generateEnemyList(lvl: number): character[] {
                 default:
                     break;
             }
+        }
+    }
+    return tempList;
+}
+export function generateBossFight(lvl: number): character[] {
+    let tempList: character[] = [];
+    switch (lvl) {
+        //lvl 1 boss spawn
+        case 1:
+            let newLvl1Boss = new NPC.Enemy("Giant", 35, 12, 20, 20, levelOneBossTable);
+            tempList.push(newLvl1Boss);
+            break;
+
+        default:
+            break;
     }
     return tempList;
 }
