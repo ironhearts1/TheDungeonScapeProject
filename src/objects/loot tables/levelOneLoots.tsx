@@ -1,5 +1,7 @@
 import { LootDropIdentifier } from "../../types/miscTypes";
-import { bandage, bronzeDagger, bronzeHelmat, bronzePlatebody, bronzeShield, bronzeSword, coin, giantsRing, levelOneBossKey, warriorsCape } from "../items/items";
+import { bronzeShield, bronzeDagger, bronzeSword, bronzeHelmat, bronzePlatebody, giantsRing, warriorsCape } from "../items/combatItems";
+import { bandage } from "../items/healingItems";
+import { coin, levelOneBossKey } from "../items/items";
 
 export const levelOneATable: LootDropIdentifier[] = [
     [50, coin, 5],

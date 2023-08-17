@@ -9,9 +9,9 @@ body {
     align-items: center;
 }
 
-.button-container {
+.console-container {
     background-color: steelblue;
-    height: 50vh;
+    height: 60vh;
     width: 40vw;
     display: flex;
     justify-content: center;
@@ -75,4 +75,32 @@ body {
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr 1fr 1fr 1fr;
+}
+.button-groupings {
+    display: flex;
+    margin-bottom: 1em;
+    margin-top: 0.5em;
+    margin-left: 5%;
+    margin-right: 5%;
+    flex-wrap: wrap;
+    button {
+        margin-bottom: 0.5em;
+    }
+}
+
+.store-modal-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.store-modal {
+    width: 75%;
+    height: 75%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr;
+    justify-items: center;
+    align-items: center;
 }

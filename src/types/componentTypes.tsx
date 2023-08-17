@@ -1,4 +1,3 @@
-import { MutableRefObject } from "react";
 import { CombatItem, HealingItem, Item } from "./itemTypes";
 
 export type healthBarProps = {
@@ -27,4 +26,9 @@ export type equipmentItemProps = {
 export type playerAttackStyleProps = {
     attackStyle: string;
     handleAttackStyleChange: Function;
+};
+
+export type storeModalProps = {
+    isOpen: boolean;
+    handleModalClose: Function;
 };

@@ -10,6 +10,7 @@ import axios from "axios";
 import PlayerMenu from "./components/PlayerMenu";
 import { CombatItem, HealingItem, Item } from "./types/itemTypes";
 import { generateBossFight, generateEnemyList, rollEnemyAttack, rollPlayerAttack } from "./functions/fightFuncs";
+import StoreModal from "./components/StoreModal";
 
 export function App() {
     const playerSnap = useSnapshot(playerState, { sync: true });
@@ -21,6 +22,7 @@ export function App() {
     const [dungeonEnemyList, setDungeonEnemyList] = useState<character[]>([]);
     const [attackStyle, setAttackStyle] = useState("Accurate");
     const [gameDisabled, setGameDisabled] = useState(false);
+    const [isStoreModalOpen, setIsStoreModalOpen] = useState(false);
 
     function updateConsole(message: string) {
         setIsLoading(true);
@@ -34,7 +36,12 @@ export function App() {
     function clearConsole() {
         setConsoleMessages([]);
     }
-
+    function handleOpenStoreModal() {
+        setIsStoreModalOpen(() => true);
+    }
+    function handleCloseStoreModal() {
+        setIsStoreModalOpen(() => false);
+    }
     async function runFight(player: IPlayerState, enemy: character) {
         if (currentEnemy === null) {
             updateConsole("You have no current enemy to fight! Enter a dungeon and get to work!");
@@ -70,6 +77,7 @@ export function App() {
         enemyKilled(enemy);
         setGameDisabled(false);
     }
+
     function enterDungeon() {
         let tempList: character[] = generateEnemyList(1);
         updateCurrentEnemy(tempList);
@@ -153,7 +161,7 @@ export function App() {
         }
     }
     function saveToDatabase() {
-        console.log("test");
+        console.log(playerState);
         let _playerStateSerialized = {
             name: playerSnap.name,
             npc: false,
@@ -162,8 +170,8 @@ export function App() {
             skills: { ...playerState.skills },
             inventory: [...playerState.inventory],
             equipment: [...playerState.equipment],
+            location: playerState.location,
         };
-        console.log("test", _playerStateSerialized);
         let playerStateSerialized = JSON.stringify(_playerStateSerialized);
         axios.put(`https://thedungeonscapeproject-default-rtdb.firebaseio.com/${playerSnap.name}/playerState/.json`, playerStateSerialized);
     }
@@ -221,6 +229,7 @@ export function App() {
     return (
         <>
             <div className="container">
+                <StoreModal isOpen={isStoreModalOpen} handleModalClose={handleCloseStoreModal} />
                 <div>
                     <p>
                         attack: {playerSnap.skills.attack} xp: {playerSnap.xp.attackXP} Bonus: {playerSnap.bonuses.attackBonus}
@@ -256,19 +265,22 @@ export function App() {
                     <div>
                         <PlayerMenu attackStyle={attackStyle} handleAttackStyleChange={handleAttackStyleChange} updateConsole={updateConsole} />
                     </div>
-                    <div className="button-container">
+                    <div className="console-container">
                         <div className="button-groupings">
                             <button className="btn btn-warning px-2 mx-1" onClick={() => enterDungeon()} disabled={gameDisabled}>
                                 Enter Dungeon
                             </button>
                             <button className="btn btn-warning px-2 mx-1" onClick={() => runFight(playerState as IPlayerState, currentEnemy as NPC.Enemy)} disabled={gameDisabled}>
-                                start
+                                Start
                             </button>
                             <button className="btn btn-info px-2 mx-1" onClick={() => enterBossDungeon()} disabled={gameDisabled}>
                                 Enter the Bosses Dungeon
                             </button>
                             <button className="btn btn-danger px-2 mx-1" onClick={() => clearConsole()} disabled={gameDisabled}>
-                                clear
+                                Clear
+                            </button>
+                            <button className="btn btn-success px-2 mx-1" onClick={() => handleOpenStoreModal()} disabled={gameDisabled}>
+                                Go To The Store
                             </button>
                         </div>
 
