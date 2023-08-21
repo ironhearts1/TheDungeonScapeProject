@@ -17,6 +17,11 @@ export type inventoryItemProps = {
     elm: [number, Item | CombatItem | HealingItem | false];
     index: number;
 };
+export type storeItemProps = {
+    elm: [number, Item | CombatItem | HealingItem | false];
+    index: number;
+    buyer: boolean;
+};
 export type equipmentItemProps = {
     elm: [string, CombatItem | false];
     index: number;
