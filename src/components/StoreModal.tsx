@@ -9,6 +9,7 @@ import { useSnapshot } from "valtio";
 import StoreBuyerItem from "./StoreBuyerItem";
 import StoreSellerItem from "./StoreSellerItem";
 import { generalStoreLevel1 } from "../objects/generalStoreTables";
+import { findItemByName } from "../functions/utils";
 
 const style = {
     bgcolor: "background.paper",
@@ -29,13 +30,15 @@ function StoreModal({ isOpen, handleModalClose }: storeModalProps) {
                         <h1>General Store!</h1>
                         <p className="text-center">
                             Your gold:
-                            {playerSnap.inventory.map((slot) => {
-                                if (slot[1] !== false) {
-                                    if (slot[1].name === "Coin") {
-                                        return slot[0];
-                                    }
-                                }
-                            })}
+                            {findItemByName("Coin") === -1
+                                ? " 0"
+                                : playerSnap.inventory.map((slot, index) => {
+                                      if (slot[1] !== false) {
+                                          if (slot[1].name === "Coin") {
+                                              return " " + slot[0];
+                                          }
+                                      }
+                                  })}
                         </p>
                     </div>
                     <div className="buyer-seller-wrapper">

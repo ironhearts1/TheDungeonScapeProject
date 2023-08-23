@@ -4,7 +4,7 @@ import { character } from "./types/characterTypes";
 import { playerState, IPlayerState } from "./store";
 import { useSnapshot } from "valtio";
 import * as NPC from "./objects/characters/npc";
-import { sleep, between, calculateLootDrop } from "./functions/utils";
+import { sleep, between, calculateLootDrop, isThereAnOpenInventorySlot } from "./functions/utils";
 import HealthBar from "./components/HealthBar";
 import axios from "axios";
 import PlayerMenu from "./components/PlayerMenu";
@@ -187,6 +187,11 @@ export function App() {
         let inventory = [...playerState.inventory];
         console.log(inventory);
         let stackable = drop[0]["stackable"];
+        let openSlot = isThereAnOpenInventorySlot();
+        if (openSlot === false && stackable === false) {
+            updateConsole(`You drop fell on the floor because you have no space!`);
+            return;
+        }
         for (let i = 0; i < inventory.length; i++) {
             if (inventory[i][1] === false) {
                 updateConsole(`You looted ${drop[1]} ${drop[0]["name"]}`);
@@ -205,8 +210,6 @@ export function App() {
                 }
             }
         }
-        updateConsole(`You drop fell on the floor because you have no space!`);
-        return;
     }
     let playerBarWidth = (playerSnap.skills.currentHP / playerSnap.skills.maxHP) * 100;
     let enemyBarWidth = (enemyCurrHP / enemyMaxHP) * 100;

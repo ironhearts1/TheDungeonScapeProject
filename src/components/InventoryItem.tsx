@@ -5,19 +5,19 @@ import { equipmentItemProps, inventoryItemProps } from "../types/componentTypes"
 import { CombatItem, HealingItem } from "../types/itemTypes";
 import { playerState } from "../store";
 import { useSnapshot } from "valtio";
+import { dropItemFromInventory } from "../functions/utils";
 
 function InventoryItem({ elm, index }: inventoryItemProps) {
     const playerSnap = useSnapshot(playerState, { sync: true });
+
     function handleDrop() {
-        let _newInvi = [...playerState.inventory];
-        //@ts-ignore
-        let newInvi = [..._newInvi.toSpliced(index, 1), [0, false]];
-        playerState.inventory = newInvi;
+        dropItemFromInventory(index);
     }
     function handleEquip() {
         if (elm[1]) {
             let equippingItem = elm[1] as CombatItem;
             let equiptype = equippingItem.equipSlot;
+            console.log("good");
             playerState.equipment.map((slot, i) => {
                 if (slot[0] === equiptype) {
                     console.log("type found", slot[0], equiptype, equippingItem);

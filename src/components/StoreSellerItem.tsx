@@ -1,12 +1,12 @@
-import React, { useRef, useState } from "react";
+import React from "react";
 
 import { Menu, MenuItem } from "@mui/material";
-import { equipmentItemProps, inventoryItemProps } from "../types/componentTypes";
-import { CombatItem, HealingItem } from "../types/itemTypes";
+import { inventoryItemProps, storeSellerItemProps } from "../types/componentTypes";
 import { playerState } from "../store";
 import { useSnapshot } from "valtio";
+import { dropItemFromInventory, findItemByName, isThereAnOpenInventorySlot } from "../functions/utils";
 
-function StoreSellerItem({ elm, index }: inventoryItemProps) {
+function StoreSellerItem({ elm, index }: storeSellerItemProps) {
     const playerSnap = useSnapshot(playerState, { sync: true });
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
@@ -21,7 +21,36 @@ function StoreSellerItem({ elm, index }: inventoryItemProps) {
     const handleClose = () => {
         setAnchorEl(() => null);
     };
-    function handleBuy() {}
+    function handleBuy() {
+        let hasCoins = findItemByName("Coin");
+        let hasFreeSlot = isThereAnOpenInventorySlot();
+        let itemTest = findItemByName(itemName);
+        let isBuyingStackableItemTheyHave = () => {
+            let stackableTest = elm.stackable;
+            if (itemTest > -1 && stackableTest === true) {
+                return true;
+            } else {
+                return false;
+            }
+        };
+        if (hasCoins === -1 || playerState.inventory[hasCoins][0] < itemValue) {
+            alert("You don't have enough gold to purchase this item");
+            return;
+        } else if (isBuyingStackableItemTheyHave()) {
+            playerState.inventory[itemTest][0] += 1;
+            playerState.inventory[hasCoins][0] -= itemValue;
+        } else if (hasFreeSlot < 0) {
+            alert("You don't have a free inventory slot for this item");
+            return;
+        } else {
+            playerState.inventory[hasFreeSlot][0] += 1;
+            playerState.inventory[hasFreeSlot][1] = elm;
+            playerState.inventory[hasCoins][0] -= itemValue;
+        }
+        if (playerState.inventory[hasCoins][0] <= 0) {
+            dropItemFromInventory(hasCoins);
+        }
+    }
 
     return (
         //@ts-ignore

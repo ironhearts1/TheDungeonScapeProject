@@ -1,3 +1,4 @@
+import { playerState } from "../store";
 import { CombatItem, HealingItem, Item } from "../types/itemTypes";
 import { LootDropIdentifier } from "../types/miscTypes";
 
@@ -35,4 +36,32 @@ export function calculateLootDrop(dropTable: LootDropIdentifier[]) {
     }
     let drop: [Item | CombatItem | HealingItem | false, number] = [dropTable[dropID][1], dropTable[dropID][2]];
     return drop;
+}
+
+export function isThereAnOpenInventorySlot() {
+    let openSlot = -1;
+    for (let i = 0; i < playerState.inventory.length; i++) {
+        if (playerState.inventory[i][1] === false) {
+            openSlot = i;
+            break;
+        }
+    }
+    return openSlot;
+}
+export function dropItemFromInventory(index: number) {
+    let _newInvi = [...playerState.inventory];
+    //@ts-ignore
+    let newInvi = [..._newInvi.toSpliced(index, 1), [0, false]];
+    playerState.inventory = newInvi;
+}
+export function findItemByName(name: string) {
+    let itemSlot = -1;
+    for (let i = 0; i < playerState.inventory.length; i++) {
+        //@ts-ignore
+        if (playerState.inventory[i][1].name === name) {
+            itemSlot = i;
+            break;
+        }
+    }
+    return itemSlot;
 }

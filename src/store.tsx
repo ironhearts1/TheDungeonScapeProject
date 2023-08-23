@@ -42,7 +42,7 @@ let initalInvi: [number, Item | CombatItem | HealingItem | false][] = [];
 for (let i = 0; i < 30; i++) {
     initalInvi.push([0, false]);
 }
-const equipmentTypes = ["Main-Hand", "Off-Hand", "Helmat", "Body", "Legs", "Boots", "Gloves", "Cape", "Necklace", "Ring"];
+const equipmentTypes = ["Main-Hand", "Off-Hand", "Helmet", "Body", "Legs", "Boots", "Gloves", "Cape", "Necklace", "Ring"];
 let initalEquipment: [string, CombatItem | false][] = [];
 for (let i = 0; i < equipmentTypes.length; i++) {
     initalEquipment.push([equipmentTypes[i], false]);

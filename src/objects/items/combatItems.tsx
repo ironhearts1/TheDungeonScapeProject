@@ -27,7 +27,7 @@ export const bronzeHelmat: CombatItem = {
     attBonus: 1,
     strBonus: 1,
     defBonus: 3,
-    equipSlot: "Helmat",
+    equipSlot: "Helmet",
     clickOptions: ["Equip", "Drop"],
 };
 export const bronzeShield: CombatItem = {
