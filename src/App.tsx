@@ -4,13 +4,13 @@ import { character } from "./types/characterTypes";
 import { playerState, IPlayerState } from "./store";
 import { useSnapshot } from "valtio";
 import * as NPC from "./objects/characters/npc";
-import { sleep, between, calculateLootDrop, isThereAnOpenInventorySlot } from "./functions/utils";
+import { sleep, between, calculateLootDrop, isThereAnOpenInventorySlot, saveToDatabase } from "./functions/utils";
 import HealthBar from "./components/HealthBar";
-import axios from "axios";
 import PlayerMenu from "./components/PlayerMenu";
 import { CombatItem, HealingItem, Item } from "./types/itemTypes";
 import { generateBossFight, generateEnemyList, rollEnemyAttack, rollPlayerAttack } from "./functions/fightFuncs";
 import StoreModal from "./components/StoreModal";
+import TravelModal from "./components/TravelModal";
 
 export function App() {
     const playerSnap = useSnapshot(playerState, { sync: true });
@@ -23,6 +23,7 @@ export function App() {
     const [attackStyle, setAttackStyle] = useState("Accurate");
     const [gameDisabled, setGameDisabled] = useState(false);
     const [isStoreModalOpen, setIsStoreModalOpen] = useState(false);
+    const [isTravelModalOpen, setIsTravelModalOpen] = useState(false);
 
     function updateConsole(message: string) {
         setIsLoading(true);
@@ -42,7 +43,14 @@ export function App() {
     function handleCloseStoreModal() {
         setIsStoreModalOpen(() => false);
     }
+    function handleTravelModalOpen() {
+        setIsTravelModalOpen(() => true);
+    }
+    function handleTravelModalClose() {
+        setIsTravelModalOpen(() => false);
+    }
     async function runFight(player: IPlayerState, enemy: character) {
+        console.log(currentEnemy);
         if (currentEnemy === null) {
             updateConsole("You have no current enemy to fight! Enter a dungeon and get to work!");
             return;
@@ -79,7 +87,7 @@ export function App() {
     }
 
     function enterDungeon() {
-        let tempList: character[] = generateEnemyList(1);
+        let tempList: character[] = generateEnemyList();
         updateCurrentEnemy(tempList);
     }
     function enterBossDungeon() {
@@ -94,13 +102,13 @@ export function App() {
                     if (slot[0] === 1) {
                         slot[0]--;
                         slot[1] = false;
-                        let tempList: character[] = generateBossFight(1);
+                        let tempList: character[] = generateBossFight();
                         updateCurrentEnemy(tempList);
                         return;
                     } else if (slot[0] > 1) {
                         console.log("good");
                         slot[0]--;
-                        let tempList: character[] = generateBossFight(1);
+                        let tempList: character[] = generateBossFight();
                         updateCurrentEnemy(tempList);
                         return;
                     }
@@ -129,7 +137,14 @@ export function App() {
         experienceGained();
         let dropReturn: [Item | CombatItem | HealingItem | false, number] = calculateLootDrop(enemy.lootTable);
         addDropToInventory(dropReturn);
-        saveToDatabase();
+        if (currentEnemy) {
+            if (currentEnemy.boss) {
+                if (playerState.bossesKilled.indexOf(playerState.location) === -1) {
+                    playerState.bossesKilled.push(playerState.location);
+                }
+            }
+        }
+
         if (dungeonEnemyList.length === 1) {
             updateConsole(`You have successfully cleared the Dungeon! Good job!`);
             let tempList = dungeonEnemyList;
@@ -142,6 +157,7 @@ export function App() {
         let tempList = dungeonEnemyList;
         tempList.shift();
         updateCurrentEnemy(tempList);
+        saveToDatabase();
         return;
     }
     function experienceGained() {
@@ -160,21 +176,6 @@ export function App() {
             }
         }
     }
-    function saveToDatabase() {
-        console.log(playerState);
-        let _playerStateSerialized = {
-            name: playerSnap.name,
-            npc: false,
-            xp: { ...playerState.xp },
-            bonuses: { ...playerState.bonuses },
-            skills: { ...playerState.skills },
-            inventory: [...playerState.inventory],
-            equipment: [...playerState.equipment],
-            location: playerState.location,
-        };
-        let playerStateSerialized = JSON.stringify(_playerStateSerialized);
-        axios.put(`https://thedungeonscapeproject-default-rtdb.firebaseio.com/${playerSnap.name}/playerState/.json`, playerStateSerialized);
-    }
 
     function addDropToInventory(drop: [Item | CombatItem | HealingItem | false, number]) {
         // DROP IS [ITEM, AMOUNT]
@@ -183,12 +184,10 @@ export function App() {
             updateConsole("Looted nothing from the corpse");
             return;
         }
-        console.log(drop);
         let inventory = [...playerState.inventory];
-        console.log(inventory);
         let stackable = drop[0]["stackable"];
         let openSlot = isThereAnOpenInventorySlot();
-        if (openSlot === false && stackable === false) {
+        if (openSlot === -1 && stackable === false) {
             updateConsole(`You drop fell on the floor because you have no space!`);
             return;
         }
@@ -211,6 +210,7 @@ export function App() {
             }
         }
     }
+
     let playerBarWidth = (playerSnap.skills.currentHP / playerSnap.skills.maxHP) * 100;
     let enemyBarWidth = (enemyCurrHP / enemyMaxHP) * 100;
     //@ts-ignore
@@ -233,19 +233,21 @@ export function App() {
         <>
             <div className="container">
                 <StoreModal isOpen={isStoreModalOpen} handleModalClose={handleCloseStoreModal} />
+                <TravelModal isOpen={isTravelModalOpen} handleModalClose={handleTravelModalClose} />
                 <div>
                     <p>
-                        attack: {playerSnap.skills.attack} xp: {playerSnap.xp.attackXP} Bonus: {playerSnap.bonuses.attackBonus}
+                        Attack: {playerSnap.skills.attack} XP: {playerSnap.xp.attackXP} Bonus: {playerSnap.bonuses.attackBonus}
                     </p>
                     <p>
-                        strength: {playerSnap.skills.strength} xp: {playerSnap.xp.strengthXP} Bonus: {playerSnap.bonuses.strengthBonus}
+                        Strength: {playerSnap.skills.strength} XP: {playerSnap.xp.strengthXP} Bonus: {playerSnap.bonuses.strengthBonus}
                     </p>
                     <p>
-                        defense: {playerSnap.skills.defense} xp: {playerSnap.xp.defenseXP} Bonus: {playerSnap.bonuses.defenseBonus}
+                        Defense: {playerSnap.skills.defense} XP: {playerSnap.xp.defenseXP} Bonus: {playerSnap.bonuses.defenseBonus}
                     </p>
                     <p>
-                        health: {playerSnap.skills.maxHP} xp: {playerSnap.xp.hpXP}
+                        Health: {playerSnap.skills.maxHP} XP: {playerSnap.xp.hpXP}
                     </p>
+                    <p>Level: {playerSnap.location}</p>
                 </div>
                 <div className="text-center pb-5 mb-5">
                     {dungeonEnemyList.map((el, index) => {
@@ -270,20 +272,23 @@ export function App() {
                     </div>
                     <div className="console-container">
                         <div className="button-groupings">
-                            <button className="btn btn-warning px-2 mx-1" onClick={() => enterDungeon()} disabled={gameDisabled}>
+                            <button className="btn btn-warning px-1 mx-1" onClick={() => enterDungeon()} disabled={gameDisabled}>
                                 Enter Dungeon
                             </button>
-                            <button className="btn btn-warning px-2 mx-1" onClick={() => runFight(playerState as IPlayerState, currentEnemy as NPC.Enemy)} disabled={gameDisabled}>
+                            <button className="btn btn-warning px-1 mx-1" onClick={() => runFight(playerState as IPlayerState, currentEnemy as NPC.Enemy)} disabled={gameDisabled}>
                                 Start
                             </button>
-                            <button className="btn btn-info px-2 mx-1" onClick={() => enterBossDungeon()} disabled={gameDisabled}>
+                            <button className="btn btn-info px-1 mx-1" onClick={() => enterBossDungeon()} disabled={gameDisabled}>
                                 Enter the Bosses Dungeon
                             </button>
-                            <button className="btn btn-danger px-2 mx-1" onClick={() => clearConsole()} disabled={gameDisabled}>
+                            <button className="btn btn-danger px-1 mx-1" onClick={() => clearConsole()} disabled={gameDisabled}>
                                 Clear
                             </button>
-                            <button className="btn btn-success px-2 mx-1" onClick={() => handleOpenStoreModal()} disabled={gameDisabled}>
-                                Go To The Store
+                            <button className="btn btn-success px-1 mx-1" onClick={() => handleOpenStoreModal()} disabled={gameDisabled}>
+                                The Store
+                            </button>
+                            <button className="btn btn-success px-1 mx-1" onClick={() => handleTravelModalOpen()} disabled={gameDisabled}>
+                                Travel
                             </button>
                         </div>
 

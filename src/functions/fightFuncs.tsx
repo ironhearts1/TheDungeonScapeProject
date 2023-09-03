@@ -45,11 +45,12 @@ export function updateEnemyHealth(enemy: character, damage: number, setEnemyCurr
     setEnemyCurrHP(() => newHealth);
 }
 
-export function generateEnemyList(lvl: number): character[] {
+export function generateEnemyList(): character[] {
+    let dungeonLevel = playerState.location;
     let tempList: character[] = [];
     for (let i = 0; i < 5; i++) {
         let randomNum = between(1, 6);
-        if (lvl == 1) {
+        if (dungeonLevel == 1) {
             switch (randomNum) {
                 //goblin spawn
                 case 1:
@@ -81,12 +82,13 @@ export function generateEnemyList(lvl: number): character[] {
     }
     return tempList;
 }
-export function generateBossFight(lvl: number): character[] {
+export function generateBossFight(): character[] {
+    let dungeonLevel = playerState.location;
     let tempList: character[] = [];
-    switch (lvl) {
+    switch (dungeonLevel) {
         //lvl 1 boss spawn
         case 1:
-            let newLvl1Boss = new NPC.Enemy("Giant", 35, 12, 20, 20, levelOneBossTable);
+            let newLvl1Boss = new NPC.Enemy("Giant", 35, 12, 20, 20, levelOneBossTable, true);
             tempList.push(newLvl1Boss);
             break;
 

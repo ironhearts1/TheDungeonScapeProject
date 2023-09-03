@@ -1,3 +1,4 @@
+import axios from "axios";
 import { playerState } from "../store";
 import { CombatItem, HealingItem, Item } from "../types/itemTypes";
 import { LootDropIdentifier } from "../types/miscTypes";
@@ -64,4 +65,20 @@ export function findItemByName(name: string) {
         }
     }
     return itemSlot;
+}
+
+export function saveToDatabase() {
+    let _playerStateSerialized = {
+        name: playerState.name,
+        npc: false,
+        xp: { ...playerState.xp },
+        bonuses: { ...playerState.bonuses },
+        skills: { ...playerState.skills },
+        inventory: [...playerState.inventory],
+        equipment: [...playerState.equipment],
+        location: playerState.location,
+        bossesKilled: playerState.bossesKilled,
+    };
+    let playerStateSerialized = JSON.stringify(_playerStateSerialized);
+    axios.put(`https://thedungeonscapeproject-default-rtdb.firebaseio.com/${playerState.name}/playerState/.json`, playerStateSerialized);
 }

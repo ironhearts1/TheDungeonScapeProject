@@ -8,6 +8,7 @@ export type character = {
     attack: number;
     strength: number;
     defense: number;
+    boss: boolean;
     setHP: Function;
     getAttackRoll: Function;
     getDefenseRoll: Function;

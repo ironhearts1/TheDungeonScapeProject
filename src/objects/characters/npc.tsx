@@ -9,7 +9,8 @@ export class Enemy {
     strength: number;
     defense: number;
     lootTable: LootDropIdentifier[];
-    constructor(_name: string, _maxHP: number, _attack: number, _strength: number, _defense: number, _lootTable: LootDropIdentifier[]) {
+    boss: boolean;
+    constructor(_name: string, _maxHP: number, _attack: number, _strength: number, _defense: number, _lootTable: LootDropIdentifier[], _boss = false) {
         this.name = _name;
         this.maxHP = _maxHP;
         this.currentHP = _maxHP;
@@ -17,6 +18,7 @@ export class Enemy {
         this.strength = _strength;
         this.defense = _defense;
         this.lootTable = _lootTable;
+        this.boss = _boss;
     }
     npc = true;
     setHP(newHP: number) {
