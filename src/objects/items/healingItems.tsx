@@ -14,3 +14,10 @@ export const ointment: HealingItem = {
     pointsHealed: 11,
     clickOptions: ["Consume", "Drop"],
 };
+export const basicFirstAidKit: HealingItem = {
+    name: "Basic First Aid Kit",
+    value: 200,
+    stackable: true,
+    pointsHealed: 18,
+    clickOptions: ["Consume", "Drop"],
+};

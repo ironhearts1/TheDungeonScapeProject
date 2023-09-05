@@ -59,13 +59,13 @@ export const playerState: IPlayerState = proxy({
             playerState.skills.currentHP = newHP;
         },
         getAttackRoll: function () {
-            return (playerState.skills.attack + playerState.bonuses.attackBonus + 50) / 100;
+            return (playerState.skills.attack + playerState.bonuses.attackBonus * 0.6 + 50) / 100;
         },
         getDefenseRoll: function () {
-            return (playerState.skills.defense + playerState.bonuses.strengthBonus + 50) / 100;
+            return (playerState.skills.defense + playerState.bonuses.strengthBonus * 0.4 + 50) / 100;
         },
         getStrengthRoll: function () {
-            return ((playerState.skills.strength + playerState.bonuses.defenseBonus + 50) * (between(90, 110) / 100)) / 175;
+            return ((playerState.skills.strength + playerState.bonuses.defenseBonus * 0.6 + 50) * (between(90, 110) / 100)) / 175;
         },
     },
     // inventory: [...initalInvi],
@@ -73,7 +73,7 @@ export const playerState: IPlayerState = proxy({
     inventory: [...importedData.inventory],
     equipment: [...importedData.equipment],
     location: importedData.location,
-    bossesKilled: [0],
+    bossesKilled: [...importedData.bossesKilled],
 });
 
 subscribe(playerState.xp, () => {

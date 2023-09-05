@@ -12,3 +12,9 @@ export const levelOneBossKey: Item = {
     stackable: true,
     clickOptions: ["Drop"],
 };
+export const levelTwoBossKey: Item = {
+    name: "Boss Key 2",
+    value: 100,
+    stackable: true,
+    clickOptions: ["Drop"],
+};

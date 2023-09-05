@@ -33,6 +33,5 @@ export const levelOneBossTable: LootDropIdentifier[] = [
     [25, bronzePlatebody, 1],
     [25, ironPlatebody, 1],
     [20, giantsRing, 1],
-    [20, warriorsCape, 1],
-    [6, levelOneBossKey, 1],
+    [10, levelOneBossKey, 1],
 ];

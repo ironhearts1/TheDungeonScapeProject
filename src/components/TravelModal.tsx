@@ -5,9 +5,14 @@ import { Modal, Box } from "@mui/material";
 import { storeModalProps } from "../types/componentTypes";
 
 function TravelModal({ isOpen, handleModalClose }: storeModalProps) {
+    const LEVELS = ["LEVEL 1", "LEVEL 2", "LEVEL 3", "LEVEL 4", "LEVEL 5", "LEVEL 6", "LEVEL 7"];
     const playerSnap = useSnapshot(playerState, { sync: true });
     function handleClose() {
         handleModalClose();
+    }
+    function handleTravel(newLocaiton: number) {
+        playerState.location = newLocaiton;
+        handleClose();
     }
     const style = {
         bgcolor: "background.paper",
@@ -21,13 +26,19 @@ function TravelModal({ isOpen, handleModalClose }: storeModalProps) {
                     <div>
                         <h1 className="travel-heading">Select Destination</h1>
                         <div className="level-buttons">
-                            <button className="btn-level">LEVEL 1</button>
-                            <button className="btn-level">LEVEL 2</button>
-                            <button className="btn-level-disabled">LEVEL 3</button>
-                            <button className="btn-level-disabled">LEVEL 4</button>
-                            <button className="btn-level-disabled">LEVEL 5</button>
-                            <button className="btn-level-disabled">LEVEL 6</button>
-                            <button className="btn-level-disabled">LEVEL 7</button>
+                            {LEVELS.map((level, index) => {
+                                let levelCheck = playerState.bossesKilled.indexOf(index);
+                                console.log(levelCheck);
+                                if (levelCheck > -1) {
+                                    return (
+                                        <button className="btn-level level-enabled" onClick={() => handleTravel(index + 1)}>
+                                            {level}
+                                        </button>
+                                    );
+                                } else {
+                                    return <button className="btn-level level-disabled">{level}</button>;
+                                }
+                            })}
                         </div>
                     </div>
                 </Box>

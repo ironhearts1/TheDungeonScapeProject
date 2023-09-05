@@ -3,6 +3,7 @@ import { IPlayerState, playerState } from "../store";
 import { character } from "../types/characterTypes";
 import { between } from "./utils";
 import * as NPC from "../objects/characters/npc";
+import { levelTwoATable, levelTwoBTable, levelTwoBossTable, levelTwoCTable } from "../objects/loot tables/levelTwoLoots";
 
 export function rollPlayerAttack(attacker: IPlayerState, defender: character, updateConsole: Function, setEnemyCurrHP: Function) {
     let attackerAttRoll: number = Math.random() * 10 * attacker.combat.getAttackRoll();
@@ -52,17 +53,14 @@ export function generateEnemyList(): character[] {
         let randomNum = between(1, 6);
         if (dungeonLevel == 1) {
             switch (randomNum) {
-                //goblin spawn
                 case 1:
                     let newGoblin = new NPC.Enemy("Goblin", 5, 3, 1, 3, levelOneBTable);
                     tempList.push(newGoblin);
                     break;
-                //rat spawn
                 case 2:
                     let newRat = new NPC.Enemy("Rat", 3, 1, 1, 1, levelOneATable);
                     tempList.push(newRat);
                     break;
-                //blind man Spawn
                 case 3:
                     let newBlindMan = new NPC.Enemy("Blind Man", 10, 1, 5, 5, levelOneCTable);
                     tempList.push(newBlindMan);
@@ -73,6 +71,32 @@ export function generateEnemyList(): character[] {
                     break;
                 case 5:
                     let newOgre = new NPC.Enemy("Ogre", 7, 8, 5, 2, levelOneCTable);
+                    tempList.push(newOgre);
+                    break;
+                default:
+                    break;
+            }
+        }
+        if (dungeonLevel == 2) {
+            switch (randomNum) {
+                case 1:
+                    let newGoblin = new NPC.Enemy("Ice Mage", 12, 12, 10, 2, levelTwoATable);
+                    tempList.push(newGoblin);
+                    break;
+                case 2:
+                    let newRat = new NPC.Enemy("Fire Sprite", 15, 10, 10, 7, levelTwoBTable);
+                    tempList.push(newRat);
+                    break;
+                case 3:
+                    let newBlindMan = new NPC.Enemy("Cursed Witch", 10, 10, 15, 5, levelTwoBTable);
+                    tempList.push(newBlindMan);
+                    break;
+                case 4:
+                    let newCow = new NPC.Enemy("Swamp Troll", 22, 8, 10, 15, levelTwoCTable);
+                    tempList.push(newCow);
+                    break;
+                case 5:
+                    let newOgre = new NPC.Enemy("Serpent", 20, 10, 15, 10, levelTwoCTable);
                     tempList.push(newOgre);
                     break;
                 default:
@@ -90,6 +114,10 @@ export function generateBossFight(): character[] {
         case 1:
             let newLvl1Boss = new NPC.Enemy("Giant", 35, 12, 20, 20, levelOneBossTable, true);
             tempList.push(newLvl1Boss);
+            break;
+        case 2:
+            let newLvl2Boss = new NPC.Enemy("Troll Mother", 50, 22, 25, 35, levelTwoBossTable, true);
+            tempList.push(newLvl2Boss);
             break;
 
         default:

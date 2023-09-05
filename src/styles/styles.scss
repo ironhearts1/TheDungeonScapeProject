@@ -158,26 +158,17 @@ body {
     line-height: 150%;
     font-weight: 700;
     border: 3px solid black;
-    transition: background-color 750ms;
     letter-spacing: 4px;
+}
+.level-enabled {
+    transition: background-color 750ms;
     &:hover {
         background-color: rgb(0, 169, 169);
         transition: background-color 750ms;
     }
 }
-.btn-level-disabled {
-    width: 100%;
-    @media (max-width: 900px) {
-        width: 75%;
-    }
-    background-color: #0d6efd;
-    border-radius: 12px;
-    font-size: 22px;
-    line-height: 150%;
-    font-weight: 700;
-    border: 3px solid black;
+.level-disabled {
     transition: background-color 250ms;
-    letter-spacing: 4px;
     &:hover {
         background-color: grey;
         transition: background-color 250ms;

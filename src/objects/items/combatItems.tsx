@@ -196,3 +196,68 @@ export const hardLeatherBoots: CombatItem = {
     equipSlot: "Boots",
     clickOptions: ["Equip", "Drop"],
 };
+export const steelDagger = {
+    name: "Steel Dagger",
+    value: 82,
+    stackable: false,
+    attBonus: 7,
+    strBonus: 7,
+    defBonus: 4,
+    equipSlot: "Main-Hand",
+    clickOptions: ["Equip", "Drop"],
+};
+
+export const steelSword = {
+    name: "Steel Sword",
+    value: 408,
+    stackable: false,
+    attBonus: 18,
+    strBonus: 10,
+    defBonus: 5,
+    equipSlot: "Main-Hand",
+    clickOptions: ["Equip", "Drop"],
+};
+
+export const steelHelmet = {
+    name: "Steel Helmet",
+    value: 327,
+    stackable: false,
+    attBonus: 2,
+    strBonus: 2,
+    defBonus: 6,
+    equipSlot: "Helmet",
+    clickOptions: ["Equip", "Drop"],
+};
+
+export const steelShield = {
+    name: "Steel Shield",
+    value: 408,
+    stackable: false,
+    attBonus: 3,
+    strBonus: 3,
+    defBonus: 13,
+    equipSlot: "Off-Hand",
+    clickOptions: ["Equip", "Drop"],
+};
+
+export const steelPlatelegs = {
+    name: "Steel Platelegs",
+    value: 507,
+    stackable: false,
+    attBonus: 4,
+    strBonus: 3,
+    defBonus: 26,
+    equipSlot: "Legs",
+    clickOptions: ["Equip", "Drop"],
+};
+
+export const steelPlatebody = {
+    name: "Steel Platebody",
+    value: 610,
+    stackable: false,
+    attBonus: 6,
+    strBonus: 6,
+    defBonus: 26,
+    equipSlot: "Body",
+    clickOptions: ["Equip", "Drop"],
+};

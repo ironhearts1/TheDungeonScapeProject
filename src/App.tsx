@@ -98,7 +98,7 @@ export function App() {
                 return;
             } else {
                 let itemName = slot[1].name.split(" ");
-                if (itemName[0] === "Boss" && itemName[1] === "Key") {
+                if (itemName[0] === "Boss" && itemName[1] === "Key" && playerState.location == Number(itemName[2])) {
                     if (slot[0] === 1) {
                         slot[0]--;
                         slot[1] = false;
@@ -112,6 +112,8 @@ export function App() {
                         updateCurrentEnemy(tempList);
                         return;
                     }
+                } else if (itemName[0] === "Boss" && itemName[1] === "Key" && playerState.location != Number(itemName[2])) {
+                    updateConsole("You are using the wrong boss key for this location");
                 }
                 return;
             }
