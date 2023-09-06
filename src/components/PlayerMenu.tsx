@@ -12,7 +12,7 @@ import { playerState } from "../store";
 import { useSnapshot } from "valtio";
 import EquipmentItem from "./EquipmentItem";
 
-export default function PlayerMenu({ handleAttackStyleChange, attackStyle, updateConsole }: playerMenuProps) {
+export default function PlayerMenu({ handleAttackStyleChange, attackStyle, updateConsole, enterBossDungeon }: playerMenuProps) {
     const playerSnap = useSnapshot(playerState, { sync: true });
     const [value, setValue] = useState("1");
     const handleMenuChange = (event: React.SyntheticEvent, newValue: string) => {
@@ -40,7 +40,7 @@ export default function PlayerMenu({ handleAttackStyleChange, attackStyle, updat
                                 return;
                             }
                             //@ts-ignore
-                            return <InventoryItem elm={elm} index={index} />;
+                            return <InventoryItem elm={elm} index={index} enterBossDungeon={enterBossDungeon} />;
                         })}
                     </div>
                 </TabPanel>

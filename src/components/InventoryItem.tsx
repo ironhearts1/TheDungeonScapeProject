@@ -7,7 +7,7 @@ import { playerState } from "../store";
 import { useSnapshot } from "valtio";
 import { dropItemFromInventory } from "../functions/utils";
 
-function InventoryItem({ elm, index }: inventoryItemProps) {
+function InventoryItem({ elm, index, enterBossDungeon }: inventoryItemProps) {
     const playerSnap = useSnapshot(playerState, { sync: true });
 
     function handleDrop() {
@@ -88,6 +88,8 @@ function InventoryItem({ elm, index }: inventoryItemProps) {
                               return <MenuItem onClick={() => handleEquip()}>{option}</MenuItem>;
                           } else if (option === "Consume") {
                               return <MenuItem onClick={() => handleConsume()}>{option}</MenuItem>;
+                          } else if (option === "Use Key") {
+                              return <MenuItem onClick={() => enterBossDungeon(index)}>{option}</MenuItem>;
                           } else {
                               return;
                           }

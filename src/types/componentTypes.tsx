@@ -11,11 +11,13 @@ export type playerMenuProps = {
     handleAttackStyleChange: Function;
     attackStyle: string;
     updateConsole: Function;
+    enterBossDungeon: Function;
 };
 
 export type inventoryItemProps = {
     elm: [number, Item | CombatItem | HealingItem | false];
     index: number;
+    enterBossDungeon: Function;
 };
 export type storeSellerItemProps = {
     elm: Item | CombatItem | HealingItem;

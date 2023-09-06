@@ -11,6 +11,7 @@ import { CombatItem, HealingItem, Item } from "./types/itemTypes";
 import { generateBossFight, generateEnemyList, rollEnemyAttack, rollPlayerAttack } from "./functions/fightFuncs";
 import StoreModal from "./components/StoreModal";
 import TravelModal from "./components/TravelModal";
+import GameButtons from "./components/GameButtons";
 
 export function App() {
     const playerSnap = useSnapshot(playerState, { sync: true });
@@ -90,34 +91,32 @@ export function App() {
         let tempList: character[] = generateEnemyList();
         updateCurrentEnemy(tempList);
     }
-    function enterBossDungeon() {
+    function enterBossDungeon(index: number) {
         let inventory = playerState.inventory;
-
-        inventory.map((slot) => {
-            if (slot[1] === false) {
-                return;
-            } else {
-                let itemName = slot[1].name.split(" ");
-                if (itemName[0] === "Boss" && itemName[1] === "Key" && playerState.location == Number(itemName[2])) {
-                    if (slot[0] === 1) {
-                        slot[0]--;
-                        slot[1] = false;
-                        let tempList: character[] = generateBossFight();
-                        updateCurrentEnemy(tempList);
-                        return;
-                    } else if (slot[0] > 1) {
-                        console.log("good");
-                        slot[0]--;
-                        let tempList: character[] = generateBossFight();
-                        updateCurrentEnemy(tempList);
-                        return;
-                    }
-                } else if (itemName[0] === "Boss" && itemName[1] === "Key" && playerState.location != Number(itemName[2])) {
-                    updateConsole("You are using the wrong boss key for this location");
+        let slot = inventory[index];
+        if (slot[1] === false) {
+            return;
+        } else {
+            let itemName = slot[1].name.split(" ");
+            if (itemName[0] === "Boss" && itemName[1] === "Key" && playerState.location == Number(itemName[2])) {
+                if (slot[0] === 1) {
+                    slot[0]--;
+                    slot[1] = false;
+                    let tempList: character[] = generateBossFight();
+                    updateCurrentEnemy(tempList);
+                    return;
+                } else if (slot[0] > 1) {
+                    console.log("good");
+                    slot[0]--;
+                    let tempList: character[] = generateBossFight();
+                    updateCurrentEnemy(tempList);
+                    return;
                 }
-                return;
+            } else if (itemName[0] === "Boss" && itemName[1] === "Key" && playerState.location != Number(itemName[2])) {
+                updateConsole("You are using the wrong boss key for this location");
             }
-        });
+            return;
+        }
     }
 
     function updateCurrentEnemy(newEnemyList: character[]) {
@@ -270,19 +269,20 @@ export function App() {
                 </div>
                 <div className="middle-grouping">
                     <div>
-                        <PlayerMenu attackStyle={attackStyle} handleAttackStyleChange={handleAttackStyleChange} updateConsole={updateConsole} />
+                        <PlayerMenu attackStyle={attackStyle} handleAttackStyleChange={handleAttackStyleChange} updateConsole={updateConsole} enterBossDungeon={enterBossDungeon} />
                     </div>
                     <div className="console-container">
                         <div className="button-groupings">
                             <button className="btn btn-warning px-1 mx-1" onClick={() => enterDungeon()} disabled={gameDisabled}>
                                 Enter Dungeon
                             </button>
-                            <button className="btn btn-warning px-1 mx-1" onClick={() => runFight(playerState as IPlayerState, currentEnemy as NPC.Enemy)} disabled={gameDisabled}>
+                            {/* <button className="btn btn-warning px-1 mx-1" onClick={() => runFight(playerState as IPlayerState, currentEnemy as NPC.Enemy)} disabled={gameDisabled}>
                                 Start
-                            </button>
-                            <button className="btn btn-info px-1 mx-1" onClick={() => enterBossDungeon()} disabled={gameDisabled}>
+                            </button> */}
+                            <GameButtons />
+                            {/* <button className="btn btn-info px-1 mx-1" onClick={() => enterBossDungeon()} disabled={gameDisabled}>
                                 Enter the Bosses Dungeon
-                            </button>
+                            </button> */}
                             <button className="btn btn-danger px-1 mx-1" onClick={() => clearConsole()} disabled={gameDisabled}>
                                 Clear
                             </button>
