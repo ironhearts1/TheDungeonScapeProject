@@ -20,7 +20,7 @@ function StoreBuyerItem({ elm, index }: inventoryItemProps) {
     };
     function handleSell() {
         if (elm[1]) {
-            const itemSellValue = elm[1].value * 0.8;
+            const itemSellValue = Math.floor(elm[1].value * 0.65);
             let hasCoins = findItemByName("Coin");
             if (hasCoins === -1) {
                 playerState.inventory[index][0] = itemSellValue;
@@ -44,7 +44,7 @@ function StoreBuyerItem({ elm, index }: inventoryItemProps) {
                         <br />
                         {elm[1] ? elm[1]["name"] : "null"}
                         <br />
-                        {elm[1] ? "sell for " + elm[1]["value"] * 0.8 : "null"}
+                        {elm[1] ? "sell for " + Math.floor(elm[1]["value"] * 0.65) : "null"}
                     </div>
                     <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
                         <MenuItem onClick={() => handleSell()}>Sell</MenuItem>

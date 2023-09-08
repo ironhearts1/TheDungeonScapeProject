@@ -1,9 +1,10 @@
 import { levelOneATable, levelOneBTable, levelOneBossTable, levelOneCTable } from "../objects/loot tables/levelOneLoots";
 import { IPlayerState, playerState } from "../store";
 import { character } from "../types/characterTypes";
-import { between } from "./utils";
+import { between, isThereAnOpenInventorySlot } from "./utils";
 import * as NPC from "../objects/characters/npc";
 import { levelTwoATable, levelTwoBTable, levelTwoBossTable, levelTwoCTable } from "../objects/loot tables/levelTwoLoots";
+import { Item, CombatItem, HealingItem } from "../types/itemTypes";
 
 export function rollPlayerAttack(attacker: IPlayerState, defender: character, updateConsole: Function, setEnemyCurrHP: Function) {
     let attackerAttRoll: number = Math.random() * 10 * attacker.combat.getAttackRoll();
@@ -124,4 +125,55 @@ export function generateBossFight(): character[] {
             break;
     }
     return tempList;
+}
+
+export function experienceGained(currentEnemy: character, attackStyle: string) {
+    let enemy = currentEnemy;
+    if (enemy) {
+        let experience = enemy.maxHP * 1.5;
+        if (attackStyle === "Defensive") {
+            playerState.xp.hpXP += (1 / 4) * experience;
+            playerState.xp.defenseXP += experience;
+        } else if (attackStyle === "Aggressive") {
+            playerState.xp.hpXP += (1 / 4) * experience;
+            playerState.xp.strengthXP += experience;
+        } else {
+            playerState.xp.hpXP += (1 / 4) * experience;
+            playerState.xp.attackXP += experience;
+        }
+    }
+}
+
+export function addDropToInventory(drop: [Item | CombatItem | HealingItem | false, number], updateConsole: Function) {
+    // DROP IS [ITEM, AMOUNT]
+    // INVENTORY IS [[AMOUNT, ITEM],[AMOUNT, ITEM], ECT]
+    if (drop[0] === false) {
+        updateConsole("Looted nothing from the corpse");
+        return;
+    }
+    let inventory = [...playerState.inventory];
+    let stackable = drop[0]["stackable"];
+    let openSlot = isThereAnOpenInventorySlot();
+    if (openSlot === -1 && stackable === false) {
+        updateConsole(`You drop fell on the floor because you have no space!`);
+        return;
+    }
+    for (let i = 0; i < inventory.length; i++) {
+        if (inventory[i][1] === false) {
+            updateConsole(`You looted ${drop[1]} ${drop[0]["name"]}`);
+            inventory[i][1] = drop[0];
+            inventory[i][0] = drop[1];
+            playerState.inventory = inventory;
+            return;
+        }
+        if (stackable === true) {
+            //@ts-ignore
+            if (inventory[i][1]["name"] === drop[0]["name"]) {
+                updateConsole(`You looted ${drop[1]} ${drop[0]["name"]}`);
+                inventory[i][0] += drop[1];
+                playerState.inventory = inventory;
+                return;
+            }
+        }
+    }
 }

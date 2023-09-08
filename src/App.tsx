@@ -8,10 +8,12 @@ import { sleep, between, calculateLootDrop, isThereAnOpenInventorySlot, saveToDa
 import HealthBar from "./components/HealthBar";
 import PlayerMenu from "./components/PlayerMenu";
 import { CombatItem, HealingItem, Item } from "./types/itemTypes";
-import { generateBossFight, generateEnemyList, rollEnemyAttack, rollPlayerAttack } from "./functions/fightFuncs";
+import { addDropToInventory, experienceGained, generateBossFight, generateEnemyList, rollEnemyAttack, rollPlayerAttack } from "./functions/fightFuncs";
 import StoreModal from "./components/StoreModal";
 import TravelModal from "./components/TravelModal";
 import GameButtons from "./components/GameButtons";
+import PlayerConsole from "./components/PlayerConsole";
+import UserStats from "./components/UserStats";
 
 export function App() {
     const playerSnap = useSnapshot(playerState, { sync: true });
@@ -50,38 +52,63 @@ export function App() {
     function handleTravelModalClose() {
         setIsTravelModalOpen(() => false);
     }
-    async function runFight(player: IPlayerState, enemy: character) {
-        console.log(currentEnemy);
+    async function runFight(player: IPlayerState, enemy: character, timesRun: number) {
         if (currentEnemy === null) {
             updateConsole("You have no current enemy to fight! Enter a dungeon and get to work!");
             return;
         }
         setGameDisabled(true);
-        console.log(`Fight Begin! player health ${player.skills.currentHP} || enemy health ${enemy.currentHP}`);
         updateConsole(`Fight Begin! player health ${player.skills.currentHP} || enemy health ${enemy.currentHP}`);
-        while (enemy.currentHP > 0 && player.skills.currentHP > 0) {
-            await sleep(0.15);
-            //player attack phase
+        if (timesRun === -1) {
+            while (enemy.currentHP > 0 && player.skills.currentHP > 0) {
+                await sleep(0.15);
+                //player attack phase
 
-            rollPlayerAttack(player, enemy, updateConsole, setEnemyCurrHP);
-            if (enemyCurrHP <= 0) {
-                console.log("Enemy Defeated!");
-                updateConsole("Enemy Defeated!");
-                break;
+                rollPlayerAttack(player, enemy, updateConsole, setEnemyCurrHP);
+                if (enemyCurrHP <= 0) {
+                    console.log("Enemy Defeated!");
+                    updateConsole("Enemy Defeated!");
+                    break;
+                }
+
+                //enemy attack phase
+                await sleep(0.15);
+                rollEnemyAttack(enemy, player, updateConsole);
+                if (player.skills.currentHP <= 0) {
+                    console.log("Oh shit you died!");
+                    updateConsole("Oh shit you died!");
+                    player.combat.setHP(player.skills.maxHP);
+                    setGameDisabled(false);
+                    return;
+                }
             }
+        } else {
+            for (let i = 0; i < timesRun; i++) {
+                await sleep(0.15);
+                //player attack phase
 
-            //enemy attack phase
-            await sleep(0.15);
-            rollEnemyAttack(enemy, player, updateConsole);
-            if (player.skills.currentHP <= 0) {
-                console.log("Oh shit you died!");
-                updateConsole("Oh shit you died!");
-                player.combat.setHP(player.skills.maxHP);
-                setGameDisabled(false);
-                return;
+                rollPlayerAttack(player, enemy, updateConsole, setEnemyCurrHP);
+                if (currentEnemy.currentHP <= 0) {
+                    updateConsole("Enemy Defeated!");
+                    break;
+                }
+
+                //enemy attack phase
+                await sleep(0.15);
+                rollEnemyAttack(enemy, player, updateConsole);
+                if (player.skills.currentHP <= 0) {
+                    updateConsole("Oh shit you died!");
+                    player.combat.setHP(player.skills.maxHP);
+                    setGameDisabled(false);
+                    return;
+                }
+                if (i === timesRun - 1) {
+                    setGameDisabled(false);
+                    return;
+                }
             }
         }
-        console.log(`The fights over! player health ${player.skills.currentHP} || enemy health ${enemy.currentHP}`);
+
         updateConsole(`The fights over! player health ${player.skills.currentHP} || enemy health ${enemy.currentHP}`);
         enemyKilled(enemy);
         setGameDisabled(false);
@@ -135,9 +162,9 @@ export function App() {
         setEnemyMaxHP(() => newEnemyList[0].maxHP);
     }
     async function enemyKilled(enemy: character) {
-        experienceGained();
+        experienceGained(enemy, attackStyle);
         let dropReturn: [Item | CombatItem | HealingItem | false, number] = calculateLootDrop(enemy.lootTable);
-        addDropToInventory(dropReturn);
+        addDropToInventory(dropReturn, updateConsole);
         if (currentEnemy) {
             if (currentEnemy.boss) {
                 if (playerState.bossesKilled.indexOf(playerState.location) === -1) {
@@ -160,56 +187,6 @@ export function App() {
         updateCurrentEnemy(tempList);
         saveToDatabase();
         return;
-    }
-    function experienceGained() {
-        let enemy = currentEnemy;
-        if (enemy) {
-            let experience = enemy.maxHP * 1.5;
-            if (attackStyle === "Defensive") {
-                playerState.xp.hpXP += (1 / 4) * experience;
-                playerState.xp.defenseXP += experience;
-            } else if (attackStyle === "Aggressive") {
-                playerState.xp.hpXP += (1 / 4) * experience;
-                playerState.xp.strengthXP += experience;
-            } else {
-                playerState.xp.hpXP += (1 / 4) * experience;
-                playerState.xp.attackXP += experience;
-            }
-        }
-    }
-
-    function addDropToInventory(drop: [Item | CombatItem | HealingItem | false, number]) {
-        // DROP IS [ITEM, AMOUNT]
-        // INVENTORY IS [[AMOUNT, ITEM],[AMOUNT, ITEM], ECT]
-        if (drop[0] === false) {
-            updateConsole("Looted nothing from the corpse");
-            return;
-        }
-        let inventory = [...playerState.inventory];
-        let stackable = drop[0]["stackable"];
-        let openSlot = isThereAnOpenInventorySlot();
-        if (openSlot === -1 && stackable === false) {
-            updateConsole(`You drop fell on the floor because you have no space!`);
-            return;
-        }
-        for (let i = 0; i < inventory.length; i++) {
-            if (inventory[i][1] === false) {
-                updateConsole(`You looted ${drop[1]} ${drop[0]["name"]}`);
-                inventory[i][1] = drop[0];
-                inventory[i][0] = drop[1];
-                playerState.inventory = inventory;
-                return;
-            }
-            if (stackable === true) {
-                //@ts-ignore
-                if (inventory[i][1]["name"] === drop[0]["name"]) {
-                    updateConsole(`You looted ${drop[1]} ${drop[0]["name"]}`);
-                    inventory[i][0] += drop[1];
-                    playerState.inventory = inventory;
-                    return;
-                }
-            }
-        }
     }
 
     let playerBarWidth = (playerSnap.skills.currentHP / playerSnap.skills.maxHP) * 100;
@@ -235,21 +212,7 @@ export function App() {
             <div className="container">
                 <StoreModal isOpen={isStoreModalOpen} handleModalClose={handleCloseStoreModal} />
                 <TravelModal isOpen={isTravelModalOpen} handleModalClose={handleTravelModalClose} />
-                <div>
-                    <p>
-                        Attack: {playerSnap.skills.attack} XP: {playerSnap.xp.attackXP} Bonus: {playerSnap.bonuses.attackBonus}
-                    </p>
-                    <p>
-                        Strength: {playerSnap.skills.strength} XP: {playerSnap.xp.strengthXP} Bonus: {playerSnap.bonuses.strengthBonus}
-                    </p>
-                    <p>
-                        Defense: {playerSnap.skills.defense} XP: {playerSnap.xp.defenseXP} Bonus: {playerSnap.bonuses.defenseBonus}
-                    </p>
-                    <p>
-                        Health: {playerSnap.skills.maxHP} XP: {playerSnap.xp.hpXP}
-                    </p>
-                    <p>Level: {playerSnap.location}</p>
-                </div>
+                <UserStats />
                 <div className="text-center pb-5 mb-5">
                     {dungeonEnemyList.map((el, index) => {
                         if (index == dungeonEnemyList.length - 1) {
@@ -272,62 +235,16 @@ export function App() {
                         <PlayerMenu attackStyle={attackStyle} handleAttackStyleChange={handleAttackStyleChange} updateConsole={updateConsole} enterBossDungeon={enterBossDungeon} />
                     </div>
                     <div className="console-container">
-                        <div className="button-groupings">
-                            <button className="btn btn-warning px-1 mx-1" onClick={() => enterDungeon()} disabled={gameDisabled}>
-                                Enter Dungeon
-                            </button>
-                            {/* <button className="btn btn-warning px-1 mx-1" onClick={() => runFight(playerState as IPlayerState, currentEnemy as NPC.Enemy)} disabled={gameDisabled}>
-                                Start
-                            </button> */}
-                            <GameButtons />
-                            {/* <button className="btn btn-info px-1 mx-1" onClick={() => enterBossDungeon()} disabled={gameDisabled}>
-                                Enter the Bosses Dungeon
-                            </button> */}
-                            <button className="btn btn-danger px-1 mx-1" onClick={() => clearConsole()} disabled={gameDisabled}>
-                                Clear
-                            </button>
-                            <button className="btn btn-success px-1 mx-1" onClick={() => handleOpenStoreModal()} disabled={gameDisabled}>
-                                The Store
-                            </button>
-                            <button className="btn btn-success px-1 mx-1" onClick={() => handleTravelModalOpen()} disabled={gameDisabled}>
-                                Travel
-                            </button>
-                        </div>
-
-                        <div className="console" id="console">
-                            {isLoading ? (
-                                <h1>loading</h1>
-                            ) : (
-                                consoleMessages
-                                    .slice(0)
-                                    .reverse()
-                                    .map((message, index) => {
-                                        let messageArray = message.split(" ");
-                                        let damageCheck = messageArray.indexOf("dealt");
-                                        let lootCheck = messageArray.indexOf("looted");
-                                        if (damageCheck > 0 || lootCheck > 0) {
-                                            if (Number(messageArray[damageCheck + 1]) > 0) {
-                                                return (
-                                                    <p className="mx-3" key={index}>
-                                                        <b>{message}</b>
-                                                    </p>
-                                                );
-                                            } else if (lootCheck > 0) {
-                                                return (
-                                                    <p className="mx-3" key={index}>
-                                                        <b>{message}</b>
-                                                    </p>
-                                                );
-                                            }
-                                        }
-                                        return (
-                                            <p className="mx-3" key={index}>
-                                                {message}
-                                            </p>
-                                        );
-                                    })
-                            )}
-                        </div>
+                        <GameButtons
+                            runFight={runFight}
+                            currentEnemy={currentEnemy as NPC.Enemy}
+                            enterDungeon={enterDungeon}
+                            clearConsole={clearConsole}
+                            handleOpenStoreModal={handleOpenStoreModal}
+                            handleTravelModalOpen={handleTravelModalOpen}
+                            gameDisabled={gameDisabled}
+                        />
+                        <PlayerConsole isLoading={isLoading} consoleMessages={consoleMessages} />
                     </div>
                 </div>
             </div>

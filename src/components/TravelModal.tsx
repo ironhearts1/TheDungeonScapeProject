@@ -28,7 +28,6 @@ function TravelModal({ isOpen, handleModalClose }: storeModalProps) {
                         <div className="level-buttons">
                             {LEVELS.map((level, index) => {
                                 let levelCheck = playerState.bossesKilled.indexOf(index);
-                                console.log(levelCheck);
                                 if (levelCheck > -1) {
                                     return (
                                         <button className="btn-level level-enabled" onClick={() => handleTravel(index + 1)}>

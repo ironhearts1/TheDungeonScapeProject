@@ -1,3 +1,4 @@
+import { Enemy } from "../objects/characters/npc";
 import { CombatItem, HealingItem, Item } from "./itemTypes";
 
 export type healthBarProps = {
@@ -37,4 +38,23 @@ export type playerAttackStyleProps = {
 export type storeModalProps = {
     isOpen: boolean;
     handleModalClose: Function;
+};
+
+export type gameButtonsProps = {
+    runFight: Function;
+    currentEnemy: Enemy;
+    enterDungeon: Function;
+    clearConsole: Function;
+    handleOpenStoreModal: Function;
+    handleTravelModalOpen: Function;
+    gameDisabled: boolean;
+};
+export type runGameButtonsProps = {
+    runFight: Function;
+    currentEnemy: Enemy;
+};
+
+export type playerConsoleProps = {
+    isLoading: boolean;
+    consoleMessages: string[];
 };

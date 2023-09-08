@@ -13,22 +13,23 @@ export const levelTwoATable: LootDropIdentifier[] = [
 export const levelTwoBTable: LootDropIdentifier[] = [
     [40, coin, 25],
     [40, coin, 120],
-    [20, ironShield, 1],
-    [20, ironPlatelegs, 1],
+    [15, ironShield, 1],
+    [15, ironPlatelegs, 1],
     [15, ointment, 2],
     [20, false, 0],
     [5, levelTwoBossKey, 1],
 ];
 export const levelTwoCTable: LootDropIdentifier[] = [
     [40, coin, 100],
-    [10, coin, 175],
+    [40, coin, 130],
+    [10, coin, 200],
     [20, bandage, 5],
     [15, ointment, 1],
     [5, basicFirstAidKit, 1],
     [20, sapphireNecklace, 1],
     [15, hardLeatherGloves, 1],
     [15, ironHelmet, 1],
-    [8, levelTwoBossKey, 1],
+    [10, levelTwoBossKey, 1],
 ];
 export const levelTwoBossTable: LootDropIdentifier[] = [
     [10, coin, 300],

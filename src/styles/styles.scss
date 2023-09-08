@@ -78,13 +78,16 @@ body {
 }
 .button-groupings {
     display: flex;
-    margin-bottom: 1em;
+    margin-bottom: 1.5em;
     margin-top: 0.5em;
     margin-left: 5%;
     margin-right: 5%;
     flex-wrap: wrap;
     button {
-        margin-bottom: 0.5em;
+        border: 2px black solid;
+        &:hover {
+            border: 2px black solid;
+        }
     }
 }
 
@@ -97,7 +100,7 @@ body {
     align-items: center;
 }
 .store-modal {
-    width: 40%;
+    width: 60%;
     height: 75%;
     display: grid;
     grid-template-columns: 1fr;
