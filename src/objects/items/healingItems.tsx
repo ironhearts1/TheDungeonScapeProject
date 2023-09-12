@@ -21,3 +21,10 @@ export const basicFirstAidKit: HealingItem = {
     pointsHealed: 18,
     clickOptions: ["Consume", "Drop"],
 };
+export const mediumFirstAidKit: HealingItem = {
+    name: "Medium First Aid Kit",
+    value: 400,
+    stackable: true,
+    pointsHealed: 23,
+    clickOptions: ["Consume", "Drop"],
+};

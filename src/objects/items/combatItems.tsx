@@ -146,6 +146,26 @@ export const warriorsCape: CombatItem = {
     equipSlot: "Cape",
     clickOptions: ["Equip", "Drop"],
 };
+export const ringOfFire: CombatItem = {
+    name: "Ring of Fire",
+    value: 400,
+    stackable: false,
+    attBonus: 9,
+    strBonus: 9,
+    defBonus: 9,
+    equipSlot: "Ring",
+    clickOptions: ["Equip", "Drop"],
+};
+export const heroesCape: CombatItem = {
+    name: "Heroes Cape",
+    value: 550,
+    stackable: false,
+    attBonus: 12,
+    strBonus: 12,
+    defBonus: 12,
+    equipSlot: "Cape",
+    clickOptions: ["Equip", "Drop"],
+};
 export const sapphireNecklace: CombatItem = {
     name: "Sapphire Necklace",
     value: 100,
@@ -246,7 +266,7 @@ export const steelPlatelegs = {
     stackable: false,
     attBonus: 4,
     strBonus: 3,
-    defBonus: 26,
+    defBonus: 24,
     equipSlot: "Legs",
     clickOptions: ["Equip", "Drop"],
 };
@@ -258,6 +278,83 @@ export const steelPlatebody = {
     attBonus: 6,
     strBonus: 6,
     defBonus: 26,
+    equipSlot: "Body",
+    clickOptions: ["Equip", "Drop"],
+};
+
+export const maceOfJustice = {
+    name: "Mace of Justice",
+    value: 1000,
+    stackable: false,
+    attBonus: 25,
+    strBonus: 20,
+    defBonus: 7,
+    equipSlot: "Main-Hand",
+    clickOptions: ["Equip", "Drop"],
+};
+
+export const mithrilDagger = {
+    name: "Mithril Dagger",
+    value: 180,
+    stackable: false,
+    attBonus: 10,
+    strBonus: 10,
+    defBonus: 5,
+    equipSlot: "Main-Hand",
+    clickOptions: ["Equip", "Drop"],
+};
+
+export const mithrilSword = {
+    name: "Mithril Sword",
+    value: 897,
+    stackable: false,
+    attBonus: 25,
+    strBonus: 14,
+    defBonus: 6,
+    equipSlot: "Main-Hand",
+    clickOptions: ["Equip", "Drop"],
+};
+
+export const mithrilHelmet = {
+    name: "Mithril Helmet",
+    value: 719,
+    stackable: false,
+    attBonus: 4,
+    strBonus: 4,
+    defBonus: 11,
+    equipSlot: "Helmet",
+    clickOptions: ["Equip", "Drop"],
+};
+
+export const mithrilShield = {
+    name: "Mithril Shield",
+    value: 897,
+    stackable: false,
+    attBonus: 5,
+    strBonus: 5,
+    defBonus: 19,
+    equipSlot: "Off-Hand",
+    clickOptions: ["Equip", "Drop"],
+};
+
+export const mithrilPlatelegs = {
+    name: "Mithril Platelegs",
+    value: 1115,
+    stackable: false,
+    attBonus: 6,
+    strBonus: 5,
+    defBonus: 33,
+    equipSlot: "Legs",
+    clickOptions: ["Equip", "Drop"],
+};
+
+export const mithrilPlatebody = {
+    name: "Mithril Platebody",
+    value: 1342,
+    stackable: false,
+    attBonus: 8,
+    strBonus: 8,
+    defBonus: 37,
     equipSlot: "Body",
     clickOptions: ["Equip", "Drop"],
 };

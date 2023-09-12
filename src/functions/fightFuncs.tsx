@@ -5,6 +5,7 @@ import { between, isThereAnOpenInventorySlot } from "./utils";
 import * as NPC from "../objects/characters/npc";
 import { levelTwoATable, levelTwoBTable, levelTwoBossTable, levelTwoCTable } from "../objects/loot tables/levelTwoLoots";
 import { Item, CombatItem, HealingItem } from "../types/itemTypes";
+import { levelThreeATable, levelThreeBTable, levelThreeBossTable, levelThreeCTable } from "../objects/loot tables/levelThreeLoots";
 
 export function rollPlayerAttack(attacker: IPlayerState, defender: character, updateConsole: Function, setEnemyCurrHP: Function) {
     let attackerAttRoll: number = Math.random() * 10 * attacker.combat.getAttackRoll();
@@ -77,28 +78,52 @@ export function generateEnemyList(): character[] {
                 default:
                     break;
             }
-        }
-        if (dungeonLevel == 2) {
+        } else if (dungeonLevel == 2) {
             switch (randomNum) {
                 case 1:
-                    let newGoblin = new NPC.Enemy("Ice Mage", 12, 12, 10, 2, levelTwoATable);
-                    tempList.push(newGoblin);
+                    let newIceMage = new NPC.Enemy("Ice Mage", 12, 12, 10, 2, levelTwoATable);
+                    tempList.push(newIceMage);
                     break;
                 case 2:
-                    let newRat = new NPC.Enemy("Fire Sprite", 15, 10, 10, 7, levelTwoBTable);
-                    tempList.push(newRat);
+                    let newFireSprite = new NPC.Enemy("Fire Sprite", 15, 10, 10, 7, levelTwoBTable);
+                    tempList.push(newFireSprite);
                     break;
                 case 3:
-                    let newBlindMan = new NPC.Enemy("Cursed Witch", 10, 10, 15, 5, levelTwoBTable);
-                    tempList.push(newBlindMan);
+                    let newCursedWitch = new NPC.Enemy("Cursed Witch", 10, 10, 15, 5, levelTwoBTable);
+                    tempList.push(newCursedWitch);
                     break;
                 case 4:
-                    let newCow = new NPC.Enemy("Swamp Troll", 22, 8, 10, 15, levelTwoCTable);
-                    tempList.push(newCow);
+                    let newSwampTroll = new NPC.Enemy("Swamp Troll", 22, 8, 10, 15, levelTwoCTable);
+                    tempList.push(newSwampTroll);
                     break;
                 case 5:
-                    let newOgre = new NPC.Enemy("Serpent", 20, 10, 15, 10, levelTwoCTable);
-                    tempList.push(newOgre);
+                    let newSerpent = new NPC.Enemy("Serpent", 20, 10, 15, 10, levelTwoCTable);
+                    tempList.push(newSerpent);
+                    break;
+                default:
+                    break;
+            }
+        } else if (dungeonLevel == 3) {
+            switch (randomNum) {
+                case 1:
+                    let newCursedBanshee = new NPC.Enemy("Cursed Banshee", 25, 15, 15, 22, levelThreeATable);
+                    tempList.push(newCursedBanshee);
+                    break;
+                case 2:
+                    let newHexedEnchantress = new NPC.Enemy("Hexed Enchantress", 25, 20, 25, 20, levelThreeBTable);
+                    tempList.push(newHexedEnchantress);
+                    break;
+                case 3:
+                    let newBogSlime = new NPC.Enemy("Bog Slime", 30, 20, 20, 30, levelThreeBTable);
+                    tempList.push(newBogSlime);
+                    break;
+                case 4:
+                    let newDwarvenWarrior = new NPC.Enemy("Dwarven Warrior", 28, 30, 25, 25, levelThreeCTable);
+                    tempList.push(newDwarvenWarrior);
+                    break;
+                case 5:
+                    let newDwarvenBerzerker = new NPC.Enemy("Dwarven Berzerker", 25, 35, 35, 20, levelThreeCTable);
+                    tempList.push(newDwarvenBerzerker);
                     break;
                 default:
                     break;
@@ -120,7 +145,10 @@ export function generateBossFight(): character[] {
             let newLvl2Boss = new NPC.Enemy("Troll Mother", 50, 22, 25, 35, levelTwoBossTable, true);
             tempList.push(newLvl2Boss);
             break;
-
+        case 3:
+            let newLvl3Boss = new NPC.Enemy("Dragonkin Priest", 70, 40, 50, 50, levelThreeBossTable, true);
+            tempList.push(newLvl3Boss);
+            break;
         default:
             break;
     }
