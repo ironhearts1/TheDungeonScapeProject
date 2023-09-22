@@ -53,6 +53,7 @@ export function dropItemFromInventory(index: number) {
     let _newInvi = [...playerState.inventory];
     //@ts-ignore
     let newInvi = [..._newInvi.toSpliced(index, 1), [0, false]];
+    //@ts-ignore
     playerState.inventory = newInvi;
 }
 export function findItemByName(name: string) {
@@ -78,6 +79,7 @@ export function saveToDatabase() {
         equipment: [...playerState.equipment],
         location: playerState.location,
         bossesKilled: playerState.bossesKilled,
+        currentQuest: ["None"],
     };
     let playerStateSerialized = JSON.stringify(_playerStateSerialized);
     axios.put(`https://thedungeonscapeproject-default-rtdb.firebaseio.com/${playerState.name}/playerState/.json`, playerStateSerialized);

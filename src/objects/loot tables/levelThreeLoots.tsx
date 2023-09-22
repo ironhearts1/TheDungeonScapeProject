@@ -1,5 +1,5 @@
 import { LootDropIdentifier } from "../../types/miscTypes";
-import { ironPlatebody, maceOfJustice, ringOfFire, steelDagger, steelHelmet, steelPlatebody, steelPlatelegs, steelShield, steelSword, warriorsCape } from "../items/combatItems";
+import { ironPlatebody, maceOfJustice, ringOfFire, steelDagger, steelHelmet, steelPlatelegs, steelShield, steelSword } from "../items/combatItems";
 import { basicFirstAidKit, mediumFirstAidKit, ointment } from "../items/healingItems";
 import { coin, levelThreeBossKey } from "../items/items";
 
@@ -38,6 +38,5 @@ export const levelThreeBossTable: LootDropIdentifier[] = [
     [25, steelPlatelegs, 1],
     [25, steelSword, 1],
     [15, ringOfFire, 1],
-    [15, maceOfJustice, 1],
     [8, levelThreeBossKey, 1],
 ];

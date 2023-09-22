@@ -3,13 +3,13 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
-import { storeModalProps } from "../types/componentTypes";
-import { playerState } from "../store";
+import { storeModalProps } from "../../types/componentTypes";
+import { playerState } from "../../store";
 import { useSnapshot } from "valtio";
-import StoreBuyerItem from "./StoreBuyerItem";
-import StoreSellerItem from "./StoreSellerItem";
-import { generalStoreLevel1 } from "../objects/generalStoreTables";
-import { findItemByName } from "../functions/utils";
+import StoreBuyerItem from "../StoreBuyerItem";
+import StoreSellerItem from "../StoreSellerItem";
+import { generalStoreLevel1 } from "../../objects/generalStoreTables";
+import { findItemByName } from "../../functions/utils";
 
 const style = {
     bgcolor: "background.paper",

@@ -19,6 +19,10 @@ function UserStats() {
                 Health: {playerSnap.skills.maxHP} XP: {playerSnap.xp.hpXP}
             </p>
             <p>Level: {playerSnap.location}</p>
+            <p>
+                Current Quest:
+                {playerSnap.currentQuest.length === 1 ? playerState.currentQuest : `Kill ${playerState.currentQuest[1]} ${playerState.currentQuest[0]} || ${playerState.currentQuest[2]} left`}
+            </p>
         </div>
     );
 }

@@ -48,6 +48,7 @@ export type gameButtonsProps = {
     handleOpenStoreModal: Function;
     handleTravelModalOpen: Function;
     gameDisabled: boolean;
+    handleLocalChatModalOpen: Function;
 };
 export type runGameButtonsProps = {
     runFight: Function;

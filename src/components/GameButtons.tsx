@@ -2,7 +2,7 @@ import { gameButtonsProps } from "../types/componentTypes";
 
 import RunFightButton from "./RunFightButton";
 
-function GameButtons({ runFight, currentEnemy, enterDungeon, clearConsole, handleOpenStoreModal, handleTravelModalOpen, gameDisabled }: gameButtonsProps) {
+function GameButtons({ runFight, currentEnemy, enterDungeon, clearConsole, handleOpenStoreModal, handleTravelModalOpen, gameDisabled, handleLocalChatModalOpen }: gameButtonsProps) {
     return (
         <>
             <div className="button-groupings">
@@ -18,6 +18,9 @@ function GameButtons({ runFight, currentEnemy, enterDungeon, clearConsole, handl
                 </button>
                 <button className="btn btn-success px-1 mx-1" onClick={() => handleTravelModalOpen()} disabled={gameDisabled}>
                     Travel
+                </button>
+                <button className="btn btn-success px-1 mx-1" onClick={() => handleLocalChatModalOpen()} disabled={gameDisabled}>
+                    Chat with Locals
                 </button>
             </div>
         </>

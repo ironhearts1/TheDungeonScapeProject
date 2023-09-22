@@ -36,6 +36,7 @@ export interface IPlayerState {
     equipment: [string, CombatItem | false][];
     location: number;
     bossesKilled: number[];
+    currentQuest: [string, number, number] | [string];
 }
 let importedData = await axios.get("https://thedungeonscapeproject-default-rtdb.firebaseio.com/Josh/playerState/.json").then((res) => res.data);
 console.log(importedData);
@@ -74,6 +75,7 @@ export const playerState: IPlayerState = proxy({
     equipment: [...importedData.equipment],
     location: importedData.location,
     bossesKilled: [...importedData.bossesKilled],
+    currentQuest: [...importedData.currentQuest],
 });
 
 subscribe(playerState.xp, () => {

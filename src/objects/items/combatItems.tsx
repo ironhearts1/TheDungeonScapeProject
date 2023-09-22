@@ -286,9 +286,9 @@ export const maceOfJustice = {
     name: "Mace of Justice",
     value: 1000,
     stackable: false,
-    attBonus: 25,
-    strBonus: 20,
-    defBonus: 7,
+    attBonus: 26,
+    strBonus: 26,
+    defBonus: 10,
     equipSlot: "Main-Hand",
     clickOptions: ["Equip", "Drop"],
 };

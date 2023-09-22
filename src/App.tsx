@@ -9,11 +9,12 @@ import HealthBar from "./components/HealthBar";
 import PlayerMenu from "./components/PlayerMenu";
 import { CombatItem, HealingItem, Item } from "./types/itemTypes";
 import { addDropToInventory, experienceGained, generateBossFight, generateEnemyList, rollEnemyAttack, rollPlayerAttack } from "./functions/fightFuncs";
-import StoreModal from "./components/StoreModal";
-import TravelModal from "./components/TravelModal";
+import StoreModal from "./components/Modals/StoreModal";
+import TravelModal from "./components/Modals/TravelModal";
 import GameButtons from "./components/GameButtons";
 import PlayerConsole from "./components/PlayerConsole";
 import UserStats from "./components/UserStats";
+import LocalChatModal from "./components/Modals/LocalChatModal";
 
 export function App() {
     const playerSnap = useSnapshot(playerState, { sync: true });
@@ -27,6 +28,7 @@ export function App() {
     const [gameDisabled, setGameDisabled] = useState(false);
     const [isStoreModalOpen, setIsStoreModalOpen] = useState(false);
     const [isTravelModalOpen, setIsTravelModalOpen] = useState(false);
+    const [isLocalChatModalOpen, setIsLocalChatModalOpen] = useState(false);
 
     function updateConsole(message: string) {
         setIsLoading(true);
@@ -51,6 +53,12 @@ export function App() {
     }
     function handleTravelModalClose() {
         setIsTravelModalOpen(() => false);
+    }
+    function handleLocalChatModalOpen() {
+        setIsLocalChatModalOpen(() => true);
+    }
+    function handleLocalChatModalClose() {
+        setIsLocalChatModalOpen(() => false);
     }
     async function runFight(player: IPlayerState, enemy: character, timesRun: number) {
         if (currentEnemy === null) {
@@ -212,6 +220,7 @@ export function App() {
             <div className="container">
                 <StoreModal isOpen={isStoreModalOpen} handleModalClose={handleCloseStoreModal} />
                 <TravelModal isOpen={isTravelModalOpen} handleModalClose={handleTravelModalClose} />
+                <LocalChatModal isOpen={isLocalChatModalOpen} handleModalClose={handleLocalChatModalClose} />
                 <UserStats />
                 <div className="text-center pb-5 mb-5">
                     {dungeonEnemyList.map((el, index) => {
@@ -243,6 +252,7 @@ export function App() {
                             handleOpenStoreModal={handleOpenStoreModal}
                             handleTravelModalOpen={handleTravelModalOpen}
                             gameDisabled={gameDisabled}
+                            handleLocalChatModalOpen={handleLocalChatModalOpen}
                         />
                         <PlayerConsole isLoading={isLoading} consoleMessages={consoleMessages} />
                     </div>

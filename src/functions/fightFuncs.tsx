@@ -6,6 +6,7 @@ import * as NPC from "../objects/characters/npc";
 import { levelTwoATable, levelTwoBTable, levelTwoBossTable, levelTwoCTable } from "../objects/loot tables/levelTwoLoots";
 import { Item, CombatItem, HealingItem } from "../types/itemTypes";
 import { levelThreeATable, levelThreeBTable, levelThreeBossTable, levelThreeCTable } from "../objects/loot tables/levelThreeLoots";
+import { levelFourATable, levelFourBTable, levelFourBossTable, levelFourCTable } from "../objects/loot tables/levelFourLoots";
 
 export function rollPlayerAttack(attacker: IPlayerState, defender: character, updateConsole: Function, setEnemyCurrHP: Function) {
     let attackerAttRoll: number = Math.random() * 10 * attacker.combat.getAttackRoll();
@@ -128,6 +129,31 @@ export function generateEnemyList(): character[] {
                 default:
                     break;
             }
+        } else if (dungeonLevel == 4) {
+            switch (randomNum) {
+                case 1:
+                    let newIroncladGolem = new NPC.Enemy("Ironclad Golem", 45, 25, 25, 40, levelFourATable);
+                    tempList.push(newIroncladGolem);
+                    break;
+                case 2:
+                    let newStormHarpy = new NPC.Enemy("Storm Harpy", 38, 38, 41, 30, levelFourBTable);
+                    tempList.push(newStormHarpy);
+                    break;
+                case 3:
+                    let newBasilisk = new NPC.Enemy("Basilisk", 40, 45, 40, 35, levelFourBTable);
+                    tempList.push(newBasilisk);
+                    break;
+                case 4:
+                    let newMinotaur = new NPC.Enemy("Minotaur", 45, 42, 42, 48, levelFourCTable);
+                    tempList.push(newMinotaur);
+                    break;
+                case 5:
+                    let newDarkNecromancer = new NPC.Enemy("Dark Necromancer", 33, 45, 55, 38, levelFourCTable);
+                    tempList.push(newDarkNecromancer);
+                    break;
+                default:
+                    break;
+            }
         }
     }
     return tempList;
@@ -149,6 +175,10 @@ export function generateBossFight(): character[] {
             let newLvl3Boss = new NPC.Enemy("Dragonkin Priest", 70, 40, 50, 50, levelThreeBossTable, true);
             tempList.push(newLvl3Boss);
             break;
+        case 4:
+            let newLvl4Boss = new NPC.Enemy("Green Dragon", 120, 60, 60, 70, levelFourBossTable, true);
+            tempList.push(newLvl4Boss);
+            break;
         default:
             break;
     }
@@ -158,7 +188,11 @@ export function generateBossFight(): character[] {
 export function experienceGained(currentEnemy: character, attackStyle: string) {
     let enemy = currentEnemy;
     if (enemy) {
-        let experience = enemy.maxHP * 1.5;
+        let multiplyer = 1;
+        for (let i = 1; i < playerState.location; i++) {
+            multiplyer += 0.1;
+        }
+        let experience = enemy.maxHP * 1.5 * multiplyer;
         if (attackStyle === "Defensive") {
             playerState.xp.hpXP += (1 / 4) * experience;
             playerState.xp.defenseXP += experience;

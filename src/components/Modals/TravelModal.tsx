@@ -1,8 +1,8 @@
 import React from "react";
 import { useSnapshot } from "valtio";
-import { playerState } from "../store";
+import { playerState } from "../../store";
 import { Modal, Box } from "@mui/material";
-import { storeModalProps } from "../types/componentTypes";
+import { storeModalProps } from "../../types/componentTypes";
 
 function TravelModal({ isOpen, handleModalClose }: storeModalProps) {
     const LEVELS = ["LEVEL 1", "LEVEL 2", "LEVEL 3", "LEVEL 4", "LEVEL 5", "LEVEL 6", "LEVEL 7"];

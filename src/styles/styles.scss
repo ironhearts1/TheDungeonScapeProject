@@ -182,3 +182,25 @@ body {
 .game-buttons-group {
     box-shadow: none !important;
 }
+
+//Local Chat Modal
+.local-chat-modal-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.local-chat-wrapper {
+    margin-top: 15%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5em;
+}
+.users-chat {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
