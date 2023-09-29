@@ -194,14 +194,14 @@ export function experienceGained(currentEnemy: character, attackStyle: string) {
         }
         let experience = enemy.maxHP * 1.5 * multiplyer;
         if (attackStyle === "Defensive") {
-            playerState.xp.hpXP += (1 / 4) * experience;
-            playerState.xp.defenseXP += experience;
+            playerState.xp.hpXP += Math.floor((1 / 4) * experience);
+            playerState.xp.defenseXP += Math.floor(experience);
         } else if (attackStyle === "Aggressive") {
-            playerState.xp.hpXP += (1 / 4) * experience;
-            playerState.xp.strengthXP += experience;
+            playerState.xp.hpXP += Math.floor((1 / 4) * experience);
+            playerState.xp.strengthXP += Math.floor(experience);
         } else {
-            playerState.xp.hpXP += (1 / 4) * experience;
-            playerState.xp.attackXP += experience;
+            playerState.xp.hpXP += Math.floor((1 / 4) * experience);
+            playerState.xp.attackXP += Math.floor(experience);
         }
     }
 }

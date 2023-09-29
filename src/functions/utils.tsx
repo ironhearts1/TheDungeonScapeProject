@@ -2,6 +2,7 @@ import axios from "axios";
 import { playerState } from "../store";
 import { CombatItem, HealingItem, Item } from "../types/itemTypes";
 import { LootDropIdentifier } from "../types/miscTypes";
+import { character } from "../types/characterTypes";
 
 export async function sleep(seconds: number) {
     return new Promise((resolve) => setTimeout(resolve, seconds * 1000));
@@ -79,8 +80,32 @@ export function saveToDatabase() {
         equipment: [...playerState.equipment],
         location: playerState.location,
         bossesKilled: playerState.bossesKilled,
-        currentQuest: ["None"],
+        currentQuest: { ...playerState.currentQuest },
     };
     let playerStateSerialized = JSON.stringify(_playerStateSerialized);
     axios.put(`https://thedungeonscapeproject-default-rtdb.firebaseio.com/${playerState.name}/playerState/.json`, playerStateSerialized);
+}
+
+export function updateQuest(enemy: character) {
+    if (playerState.currentQuest.questEnemy === "None") {
+        return;
+    }
+    let name = enemy.name;
+    if (playerState.currentQuest.questEnemy !== name) {
+        return;
+    }
+    //@ts-ignore
+    if (playerState.currentQuest.killsLeft && playerState.currentQuest.killsLeft > 0) {
+        //@ts-ignore
+        playerState.currentQuest.killsLeft -= 1;
+        return;
+    }
+    return;
+}
+
+export function resetQuest() {
+    playerState.currentQuest.questEnemy = "None";
+    playerState.currentQuest.questGoal = 0;
+    playerState.currentQuest.questLevel = 0;
+    playerState.currentQuest.killsLeft = 0;
 }

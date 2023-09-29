@@ -2,6 +2,7 @@ import axios from "axios";
 import { proxy, subscribe } from "valtio";
 import { between, generateXPLevels } from "./functions/utils";
 import { CombatItem, HealingItem, Item } from "./types/itemTypes";
+import { CurrentQuest, Quest } from "./types/miscTypes";
 
 let experienceLevels = generateXPLevels();
 
@@ -36,7 +37,12 @@ export interface IPlayerState {
     equipment: [string, CombatItem | false][];
     location: number;
     bossesKilled: number[];
-    currentQuest: [string, number, number] | [string];
+    currentQuest: {
+        questEnemy: string;
+        questGoal: number;
+        killsLeft: number;
+        questLevel: number;
+    };
 }
 let importedData = await axios.get("https://thedungeonscapeproject-default-rtdb.firebaseio.com/Josh/playerState/.json").then((res) => res.data);
 console.log(importedData);
@@ -75,7 +81,7 @@ export const playerState: IPlayerState = proxy({
     equipment: [...importedData.equipment],
     location: importedData.location,
     bossesKilled: [...importedData.bossesKilled],
-    currentQuest: [...importedData.currentQuest],
+    currentQuest: { ...importedData.currentQuest },
 });
 
 subscribe(playerState.xp, () => {

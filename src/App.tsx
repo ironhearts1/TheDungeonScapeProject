@@ -4,7 +4,7 @@ import { character } from "./types/characterTypes";
 import { playerState, IPlayerState } from "./store";
 import { useSnapshot } from "valtio";
 import * as NPC from "./objects/characters/npc";
-import { sleep, between, calculateLootDrop, isThereAnOpenInventorySlot, saveToDatabase } from "./functions/utils";
+import { sleep, between, calculateLootDrop, isThereAnOpenInventorySlot, saveToDatabase, updateQuest } from "./functions/utils";
 import HealthBar from "./components/HealthBar";
 import PlayerMenu from "./components/PlayerMenu";
 import { CombatItem, HealingItem, Item } from "./types/itemTypes";
@@ -171,6 +171,7 @@ export function App() {
     }
     async function enemyKilled(enemy: character) {
         experienceGained(enemy, attackStyle);
+        updateQuest(enemy);
         let dropReturn: [Item | CombatItem | HealingItem | false, number] = calculateLootDrop(enemy.lootTable);
         addDropToInventory(dropReturn, updateConsole);
         if (currentEnemy) {
@@ -220,7 +221,7 @@ export function App() {
             <div className="container">
                 <StoreModal isOpen={isStoreModalOpen} handleModalClose={handleCloseStoreModal} />
                 <TravelModal isOpen={isTravelModalOpen} handleModalClose={handleTravelModalClose} />
-                <LocalChatModal isOpen={isLocalChatModalOpen} handleModalClose={handleLocalChatModalClose} />
+                <LocalChatModal isOpen={isLocalChatModalOpen} handleModalClose={handleLocalChatModalClose} updateConsole={updateConsole} />
                 <UserStats />
                 <div className="text-center pb-5 mb-5">
                     {dungeonEnemyList.map((el, index) => {

@@ -4,6 +4,8 @@ import { playerState } from "../store";
 
 function UserStats() {
     const playerSnap = useSnapshot(playerState, { sync: true });
+    //@ts-ignore
+    let killsDone = playerState.currentQuest.questGoal - playerState.currentQuest.killsLeft;
     return (
         <div>
             <p>
@@ -21,7 +23,9 @@ function UserStats() {
             <p>Level: {playerSnap.location}</p>
             <p>
                 Current Quest:
-                {playerSnap.currentQuest.length === 1 ? playerState.currentQuest : `Kill ${playerState.currentQuest[1]} ${playerState.currentQuest[0]} || ${playerState.currentQuest[2]} left`}
+                {playerSnap.currentQuest.questEnemy === "None"
+                    ? " " + playerSnap.currentQuest.questEnemy
+                    : ` Kill ${playerSnap.currentQuest.questEnemy} ${killsDone}/${playerSnap.currentQuest.questGoal}`}
             </p>
         </div>
     );

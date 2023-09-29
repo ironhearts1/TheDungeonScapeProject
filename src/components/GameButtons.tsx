@@ -9,7 +9,7 @@ function GameButtons({ runFight, currentEnemy, enterDungeon, clearConsole, handl
                 <button className="btn btn-warning px-1 mx-1" onClick={() => enterDungeon()} disabled={gameDisabled}>
                     Enter Dungeon
                 </button>
-                <RunFightButton runFight={runFight} currentEnemy={currentEnemy} />
+                <RunFightButton runFight={runFight} currentEnemy={currentEnemy} gameDisabled={gameDisabled} />
                 <button className="btn btn-danger px-1 mx-1" onClick={() => clearConsole()} disabled={gameDisabled}>
                     Clear
                 </button>

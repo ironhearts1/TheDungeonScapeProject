@@ -13,7 +13,7 @@ import { runGameButtonsProps } from "../types/componentTypes";
 import { IPlayerState, playerState } from "../store";
 import { Enemy } from "../objects/characters/npc";
 
-function RunFightButtons({ runFight, currentEnemy }: runGameButtonsProps) {
+function RunFightButtons({ runFight, currentEnemy, gameDisabled }: runGameButtonsProps) {
     const options = ["Fight x1", "Fight x5", "Fight x10", "Fight till end"];
 
     const [open, setOpen] = React.useState(false);
@@ -78,7 +78,9 @@ function RunFightButtons({ runFight, currentEnemy }: runGameButtonsProps) {
     return (
         <>
             <ButtonGroup style={{ border: "2px solid black" }} variant="contained" ref={anchorRef} aria-label="split button" className="game-buttons-group">
-                <Button onClick={handleClick}>{options[selectedIndex]}</Button>
+                <Button onClick={handleClick} disabled={gameDisabled}>
+                    {options[selectedIndex]}
+                </Button>
                 <Button
                     size="small"
                     aria-controls={open ? "split-button-menu" : undefined}
@@ -87,6 +89,7 @@ function RunFightButtons({ runFight, currentEnemy }: runGameButtonsProps) {
                     aria-haspopup="menu"
                     onClick={handleToggle}
                     style={{ border: "0px solid black", borderLeft: "2px solid black" }}
+                    disabled={gameDisabled}
                 >
                     <FontAwesomeIcon icon={faAngleDown} />
                 </Button>

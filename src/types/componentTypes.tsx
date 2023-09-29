@@ -39,6 +39,11 @@ export type storeModalProps = {
     isOpen: boolean;
     handleModalClose: Function;
 };
+export type localChatModalProps = {
+    isOpen: boolean;
+    handleModalClose: Function;
+    updateConsole: Function;
+};
 
 export type gameButtonsProps = {
     runFight: Function;
@@ -53,6 +58,7 @@ export type gameButtonsProps = {
 export type runGameButtonsProps = {
     runFight: Function;
     currentEnemy: Enemy;
+    gameDisabled: boolean;
 };
 
 export type playerConsoleProps = {
